@@ -10,6 +10,7 @@ import {
   HiClipboard,
   HiCog,
   HiCollection,
+  HiDocument,
   HiInboxIn,
   HiInformationCircle,
   HiLockClosed,
@@ -71,6 +72,19 @@ const ExampleSidebar: FC = function () {
                   Dashboard
                 </Sidebar.Item>
                 <Sidebar.Item
+                  href="/application"
+                  icon={HiDocument}
+                  label={12}
+                  className={
+                    "/application" === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  Đơn ứng tuyển
+                </Sidebar.Item>
+
+                <Sidebar.Item
                   href="/kanban"
                   icon={HiViewGrid}
                   className={
@@ -79,23 +93,12 @@ const ExampleSidebar: FC = function () {
                       : ""
                   }
                 >
-                  Kanban
+                  Danh sách khoá học
                 </Sidebar.Item>
-                <Sidebar.Item
-                  href="/mailing/inbox"
-                  icon={HiInboxIn}
-                  label="3"
-                  className={
-                    "/mailing/inbox" === currentPage
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
-                  }
-                >
-                  Inbox
-                </Sidebar.Item>
+
                 <Sidebar.Collapse
                   icon={HiShoppingBag}
-                  label="E-commerce"
+                  label="Quản lý"
                   open={isEcommerceOpen}
                 >
                   <Sidebar.Item
@@ -106,7 +109,7 @@ const ExampleSidebar: FC = function () {
                         : ""
                     }
                   >
-                    Products
+                    Mentor
                   </Sidebar.Item>
                   <Sidebar.Item
                     href="/e-commerce/billing"
@@ -116,7 +119,7 @@ const ExampleSidebar: FC = function () {
                         : ""
                     }
                   >
-                    Billing
+                    Mentee
                   </Sidebar.Item>
                   <Sidebar.Item
                     href="/e-commerce/invoice"
@@ -126,7 +129,7 @@ const ExampleSidebar: FC = function () {
                         : ""
                     }
                   >
-                    Invoice
+                    Kĩ năng
                   </Sidebar.Item>
                 </Sidebar.Collapse>
                 <Sidebar.Collapse
@@ -202,26 +205,6 @@ const ExampleSidebar: FC = function () {
                     Profile lock
                   </Sidebar.Item>
                 </Sidebar.Collapse>
-              </Sidebar.ItemGroup>
-              <Sidebar.ItemGroup>
-                <Sidebar.Item
-                  href="https://github.com/themesberg/flowbite-react/"
-                  icon={HiClipboard}
-                >
-                  Docs
-                </Sidebar.Item>
-                <Sidebar.Item
-                  href="https://flowbite-react.com/"
-                  icon={HiCollection}
-                >
-                  Components
-                </Sidebar.Item>
-                <Sidebar.Item
-                  href="https://github.com/themesberg/flowbite-react/issues"
-                  icon={HiInformationCircle}
-                >
-                  Help
-                </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

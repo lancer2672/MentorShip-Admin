@@ -57,10 +57,10 @@ const ExampleNavbar: FC = function () {
                 className="mr-3 h-6 sm:h-8"
               />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
-                Flowbite
+                MentorShip
               </span>
             </Navbar.Brand>
-            <form className="ml-16 hidden md:block">
+            {/* <form className="ml-16 hidden md:block">
               <Label htmlFor="search" className="sr-only">
                 Search
               </Label>
@@ -73,7 +73,7 @@ const ExampleNavbar: FC = function () {
                 size={32}
                 type="search"
               />
-            </form>
+            </form> */}
           </div>
           <div className="flex items-center lg:gap-3">
             <div className="flex items-center">
