@@ -113,7 +113,7 @@ const ApplicationListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllUsersTable />
+              <AllApplications />
             </div>
           </div>
         </div>
@@ -210,7 +210,7 @@ const AddUserModal: FC = function () {
   );
 };
 
-const AllUsersTable: FC = function () {
+const AllApplications: FC = function () {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -266,7 +266,7 @@ const AllUsersTable: FC = function () {
           </Table.Cell>
           <Table.Cell>
             <div className="flex items-center gap-x-3 whitespace-nowrap">
-              <EditUserModal />
+              <ViewApplicationDetail />
               <DeleteUserModal />
             </div>
           </Table.Cell>
@@ -276,12 +276,18 @@ const AllUsersTable: FC = function () {
   );
 };
 
-const EditUserModal: FC = function () {
+const ViewApplicationDetail: FC = function () {
   const [isOpen, setOpen] = useState(false);
 
+  const viewApplication = () => {
+    setOpen(true);
+  };
+  const refuseApplication = () => {
+    setOpen(true);
+  };
   return (
     <>
-      <Button color="primary" onClick={() => setOpen(true)}>
+      <Button color="primary" onClick={viewApplication}>
         <div className="flex items-center gap-x-2">
           <HiOutlineEye className="text-lg" />
           Xem
