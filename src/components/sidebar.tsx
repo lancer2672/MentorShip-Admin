@@ -12,6 +12,8 @@ import {
   HiInformationCircle,
   HiLockClosed,
   HiOutlineAdjustments,
+  HiOutlineCreditCard,
+  HiOutlineReceiptRefund,
   HiSearch,
   HiShoppingBag,
   HiUsers,
@@ -131,10 +133,10 @@ const ExampleSidebar: FC = function () {
                   </Sidebar.Item>
                 </Sidebar.Collapse>
                 <Sidebar.Item
-                  href="/application"
-                  icon={HiDocument}
+                  href="/transaction"
+                  icon={HiOutlineCreditCard}
                   className={
-                    "/application" === currentPage
+                    "/transaction" === currentPage
                       ? "bg-gray-100 dark:bg-gray-700"
                       : ""
                   }
