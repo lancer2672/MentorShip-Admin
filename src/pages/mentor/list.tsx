@@ -9,7 +9,7 @@ import {
   TextInput,
 } from "flowbite-react";
 import type { FC } from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   HiChevronLeft,
   HiChevronRight,
@@ -98,7 +98,7 @@ const ApplicationListPage: FC = function () {
               </div>
             </div>
             <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
-              {/* <AddUserModal /> */}
+              <AddUserModal />
               <Button color="gray">
                 <div className="flex items-center gap-x-3">
                   <HiDocumentDownload className="text-xl" />
@@ -123,171 +123,88 @@ const ApplicationListPage: FC = function () {
   );
 };
 
-const styles = {
-  text: {
-    color: "white",
-  },
-};
-
-const data = [1, 2];
-const ViewApplicationDetail: FC = function () {
+const AddUserModal: FC = function () {
   const [isOpen, setOpen] = useState(false);
-  const [isShow, setShow] = useState(false);
-
-  const onImageClick = () => {
-    setShow(true);
-  };
-
-  const closeModal = () => {
-    if (isOpen && !isShow) {
-      setOpen(false);
-    }
-    setShow(false);
-  };
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      const modal = document.getElementById("modal");
-      if (modal && !modal.contains(event.target as Node)) {
-        closeModal();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   return (
     <>
       <Button color="primary" onClick={() => setOpen(true)}>
-        <div className="flex items-center gap-x-2">
-          <HiOutlineEye className="text-lg" />
-          Xem
+        <div className="flex items-center gap-x-3">
+          <HiDocument className="text-xl" />
+          Đơn đã duyệt
         </div>
       </Button>
-      <Modal style={{}} onClose={() => setOpen(false)} show={isOpen}>
+      <Modal onClose={() => setOpen(false)} show={isOpen}>
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Thông tin ứng viên</strong>
+          <strong>Add new user</strong>
         </Modal.Header>
         <Modal.Body>
-          <div
-            style={{
-              display: "flex",
-
-              flexDirection: "row",
-            }}
-          >
-            <img
-              style={{ marginRight: 20 }}
-              src="https://picsum.photos/300/200"
-              width={200}
-              height={160}
-            ></img>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="firstName">Họ và tên</Label>
-                <div className="mt-1">
-                  <p style={styles.text}>Trần Quốc Khánh</p>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="lastName">Ngày sinh</Label>
-                <div className="mt-1">
-                  <p style={styles.text}>27-10-2002</p>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="email">Số điện thoại</Label>
-                <div className="mt-1">
-                  <p style={styles.text}>0846202548</p>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="email">Email</Label>
-                <div className="mt-1">
-                  <p style={styles.text}>JBkhanhtran@gmail.com</p>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="phone">Nghề nghiệp</Label>
-                <div className="mt-1">
-                  <p style={styles.text}>Mobile Developer</p>
-                </div>
-              </div>
-              <div>
-                <Label htmlFor="company">Company</Label>
-                <div className="mt-1"></div>
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <Label htmlFor="firstName">First name</Label>
+              <div className="mt-1">
+                <TextInput
+                  id="firstName"
+                  name="firstName"
+                  placeholder="Bonnie"
+                />
               </div>
             </div>
-          </div>
-          <div style={{ marginTop: 12 }}>
-            <Label htmlFor="department">Kinh nghiệm làm việc</Label>
-            <div className="mt-1">
-              <p style={styles.text}>
-                Lorem ipsum dolor sit amet. Qui perspiciatis dolorem ut
-                asperiores laborum non reprehenderit voluptatem ut amet nostrum.
-                Hic fugiat sequi non mollitia rerum sit eaque illo ex voluptate
-                mollitia ut dignissimos assumenda. Eum autem cumque in voluptas
-                delectus vel dolores provident 33 quos aliquid?
-              </p>
+            <div>
+              <Label htmlFor="lastName">Last name</Label>
+              <div className="mt-1">
+                <TextInput id="lastName" name="lastName" placeholder="Green" />
+              </div>
             </div>
-            <Label style={{ marginTop: 12 }} htmlFor="department">
-              Chứng chỉ
-            </Label>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-              {data.map(() => {
-                return (
-                  <div
-                    style={{ alignItems: "center", justifyContent: "center" }}
-                  >
-                    <img
-                      onClick={onImageClick}
-                      src="https://picsum.photos/200/300"
-                      style={{
-                        objectFit: "contain",
-                        backgroundColor: "tomato",
-                        margin: 0,
-                      }}
-                      width={"80%"}
-                      height={80}
-                    ></img>
-                  </div>
-                );
-              })}
+            <div>
+              <Label htmlFor="email">Email</Label>
+              <div className="mt-1">
+                <TextInput
+                  id="email"
+                  name="email"
+                  placeholder="example@company.com"
+                  type="email"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="phone">Phone number</Label>
+              <div className="mt-1">
+                <TextInput
+                  id="phone"
+                  name="phone"
+                  placeholder="e.g., +(12)3456 789"
+                  type="tel"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="department">Department</Label>
+              <div className="mt-1">
+                <TextInput
+                  id="department"
+                  name="department"
+                  placeholder="Development"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="company">Company</Label>
+              <div className="mt-1">
+                <TextInput
+                  id="company"
+                  name="company"
+                  placeholder="Somewhere"
+                />
+              </div>
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button color="primary" onClick={() => setOpen(false)}>
-            Chấp thuận
+            Add user
           </Button>
         </Modal.Footer>
-      </Modal>
-
-      <Modal
-        onClick={(e) => e.stopPropagation()}
-        style={{}}
-        onClose={() => setShow(false)}
-        show={isShow}
-      >
-        <Modal.Body>
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
-            <img
-              style={{ marginRight: 20 }}
-              src="https://picsum.photos/200/300"
-              width={200}
-              height={160}
-            ></img>
-          </div>
-        </Modal.Body>
       </Modal>
     </>
   );
@@ -359,7 +276,7 @@ const AllApplications: FC = function () {
   );
 };
 
-const ViewApplicationDetai1l: FC = function () {
+const ViewApplicationDetail: FC = function () {
   const [isOpen, setOpen] = useState(false);
 
   const viewApplication = () => {
