@@ -159,13 +159,6 @@ const ApplicationListPage: FC = function () {
                 </div>
               </form>
               <div className="mt-3 flex space-x-1 pl-0 sm:mt-0 sm:pl-2">
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Delete</span>
-                  <HiTrash className="text-2xl" />
-                </a>
                 <Datepicker
                   options={options}
                   onChange={handleChange}
