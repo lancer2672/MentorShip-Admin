@@ -4,6 +4,7 @@ module.exports = {
   content: [
     "./index.html",
     "./node_modules/flowbite-react/lib/**/*.{js,ts}",
+    "./node_modules/tailwind-datepicker-react/dist/**/*.js",
     "./src/**/*.{ts,tsx}",
   ],
   theme: {

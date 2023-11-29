@@ -8,6 +8,7 @@ import {
   Table,
   TextInput,
 } from "flowbite-react";
+import Datepicker from "tailwind-datepicker-react";
 import type { FC } from "react";
 import { useState, useEffect } from "react";
 import {
@@ -22,6 +23,7 @@ import {
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
+// import { Datepicker } from "../../components/datepicker";
 
 const data = [
   {
@@ -44,23 +46,81 @@ const data = [
 ];
 const ApplicationListPage: FC = function () {
   const [searchTerm, setSearchTerm] = useState("");
-  const [searchResults, setSearchResults] = useState(data);
+  const [applications, setApplications] = useState(data);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [show, setShow] = useState(false);
 
+  const handleClose = (state: boolean) => {
+    setShow(state);
+  };
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
         const results = data.filter((application) =>
           application.name.toLowerCase().includes(searchTerm.toLowerCase())
         );
-        setSearchResults(results);
+        setApplications(results);
       } else {
-        setSearchResults(data);
+        setApplications(data);
       }
     }, 1200);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
-  console.log("searchResults", searchResults);
+  console.log("applications", applications);
+  const handleChange = (date) => {
+    setSelectedDate(date);
+    console.log(("seletedDate", date.getTime()));
+    const filtered = data.filter((application) => {
+      const month = application.submitDate.getMonth();
+      const year = application.submitDate.getFullYear();
+      const d = application.submitDate.getDate();
+
+      const submitDate = new Date(year, month, d).getTime();
+
+      console.log("submitDate", submitDate, date.getTime());
+      return submitDate === date.getTime();
+    });
+    setApplications(filtered);
+  };
+
+  const options = {
+    title: "Demo Title",
+    autoHide: true,
+    todayBtn: false,
+    clearBtn: true,
+    clearBtnText: "Clear",
+    maxDate: new Date("2030-01-01"),
+    minDate: new Date("1950-01-01"),
+    theme: {
+      background: "bg-gray-700 dark:bg-gray-800",
+      todayBtn: "",
+      clearBtn: "",
+      icons: "",
+      text: "",
+
+      input: "",
+      inputIcon: "",
+      selected: "",
+    },
+    icons: {
+      // () => ReactElement | JSX.Element
+    },
+    datepickerClassNames: "top-12",
+    defaultDate: new Date(),
+    language: "en",
+    disabledDates: [],
+    weekDays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
+    inputNameProp: "date",
+    inputIdProp: "date",
+    inputPlaceholderProp: "Select Date",
+    inputDateFormatProp: {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    },
+  };
+
   return (
     <NavbarSidebarLayout isFooter={false}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -106,6 +166,12 @@ const ApplicationListPage: FC = function () {
                   <span className="sr-only">Delete</span>
                   <HiTrash className="text-2xl" />
                 </a>
+                <Datepicker
+                  options={options}
+                  onChange={handleChange}
+                  show={show}
+                  setShow={handleClose}
+                />
               </div>
             </div>
             <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
@@ -124,7 +190,7 @@ const ApplicationListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllApplications applications={searchResults} />
+              <AllApplications applications={applications} />
             </div>
           </div>
         </div>
