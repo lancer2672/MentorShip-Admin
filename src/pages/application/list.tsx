@@ -13,24 +13,54 @@ import { useState, useEffect } from "react";
 import {
   HiChevronLeft,
   HiChevronRight,
-  HiCog,
-  HiDocument,
   HiDocumentDownload,
-  HiDotsVertical,
-  HiExclamationCircle,
   HiHome,
   HiOutlineExclamationCircle,
   HiOutlineEye,
-  HiOutlinePencilAlt,
-  HiOutlineXCircle,
-  HiPlus,
   HiTrash,
   HiX,
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
 
+const data = [
+  {
+    name: "Trần Quốc Khánh",
+    id: "001",
+    email: "JBkhanhtran@gmail.com",
+    submitDate: new Date(),
+    status: "Đang chờ duyệt",
+    avatar: "https://picsum.photos/200",
+  },
+  {
+    name: "Trần Quốc Khánh",
+    id: "002",
+
+    email: "JBkhanhtran@gmail.com",
+    submitDate: new Date(),
+    status: "Đang chờ duyệt",
+    avatar: "https://picsum.photos/200",
+  },
+];
 const ApplicationListPage: FC = function () {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [searchResults, setSearchResults] = useState(data);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        const results = data.filter((application) =>
+          application.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setSearchResults(results);
+      } else {
+        setSearchResults(data);
+      }
+    }, 1200);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
+  console.log("searchResults", searchResults);
   return (
     <NavbarSidebarLayout isFooter={false}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -63,6 +93,8 @@ const ApplicationListPage: FC = function () {
                     id="users-search"
                     name="users-search"
                     placeholder="Tìm đơn ứng tuyển"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
                   />
                 </div>
               </form>
@@ -71,29 +103,8 @@ const ApplicationListPage: FC = function () {
                   href="#"
                   className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                 >
-                  <span className="sr-only">Configure</span>
-                  <HiCog className="text-2xl" />
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
                   <span className="sr-only">Delete</span>
                   <HiTrash className="text-2xl" />
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Purge</span>
-                  <HiExclamationCircle className="text-2xl" />
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Settings</span>
-                  <HiDotsVertical className="text-2xl" />
                 </a>
               </div>
             </div>
@@ -113,7 +124,7 @@ const ApplicationListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllApplications />
+              <AllApplications applications={searchResults} />
             </div>
           </div>
         </div>
@@ -129,7 +140,7 @@ const styles = {
   },
 };
 
-const data = [1, 2];
+const dataImage = [1, 2];
 const ViewApplicationDetail: FC = function () {
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
@@ -237,7 +248,7 @@ const ViewApplicationDetail: FC = function () {
               Chứng chỉ
             </Label>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-              {data.map(() => {
+              {dataImage.map(() => {
                 return (
                   <div
                     style={{ alignItems: "center", justifyContent: "center" }}
@@ -272,6 +283,9 @@ const ViewApplicationDetail: FC = function () {
         onClose={() => setShow(false)}
         show={isShow}
       >
+        <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
+          <strong>Chứng chỉ</strong>
+        </Modal.Header>
         <Modal.Body>
           <div
             style={{
@@ -293,7 +307,16 @@ const ViewApplicationDetail: FC = function () {
   );
 };
 
-const AllApplications: FC = function () {
+const AllApplications: FC = function ({ applications }) {
+  const [checkedItems, setCheckedItems] = useState({});
+
+  const handleChange = (event) => {
+    setCheckedItems({
+      ...checkedItems,
+      [event.target.name]: event.target.checked,
+    });
+  };
+  console.log("checkbox", checkedItems);
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -303,57 +326,69 @@ const AllApplications: FC = function () {
           </Label>
           <Checkbox id="select-all" name="select-all" />
         </Table.HeadCell>
+        <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên</Table.HeadCell>
         <Table.HeadCell>Ngày gửi</Table.HeadCell>
-        <Table.HeadCell>Country</Table.HeadCell>
         <Table.HeadCell>Trạng thái</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        <Table.Row className="hover:bg-gray-100 dark:hover:bg-gray-700">
-          <Table.Cell className="w-4 p-4">
-            <div className="flex items-center">
-              <Checkbox aria-describedby="checkbox-1" id="checkbox-1" />
-              <label htmlFor="checkbox-1" className="sr-only">
-                checkbox
-              </label>
-            </div>
-          </Table.Cell>
-          <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
-            <img
-              className="h-10 w-10 rounded-full"
-              src="../../images/users/neil-sims.png"
-              alt="Neil Sims avatar"
-            />
-            <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-semibold text-gray-900 dark:text-white">
-                Neil Sims
+        {applications.map((application, index) => (
+          <Table.Row
+            key={index}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <Table.Cell className="w-4 p-4">
+              <div className="flex items-center">
+                <Checkbox
+                  checked={checkedItems[`checkbox-${index}`] || false} // Sử dụng trạng thái từ state
+                  onChange={handleChange} // Thêm hàm xử lý sự kiện thay đổi
+                  aria-describedby={`checkbox-${index}`}
+                  id={`checkbox-${index}`}
+                  name={`checkbox-${index}`} // Thêm thuộc tính name để xác định checkbox cụ thể nào đang được thay đổi
+                />
+                <label htmlFor={`checkbox-${index}`} className="sr-only">
+                  checkbox
+                </label>
               </div>
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {application.id}
+            </Table.Cell>
+            <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={application.avatar}
+                alt={`${application.name} avatar`}
+              />
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                neil.sims@flowbite.com
+                <div className="text-base font-semibold text-gray-900 dark:text-white">
+                  {application.name}
+                </div>
+                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  {application.email}
+                </div>
               </div>
-            </div>
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            {format(new Date(), "dd-MM-yyyy")}
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            {format(new Date(), "dd-MM-yyyy")}
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-            <div className="flex items-center">
-              <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
-              Đã duyệt
-            </div>
-          </Table.Cell>
-          <Table.Cell>
-            <div className="flex items-center gap-x-3 whitespace-nowrap">
-              <ViewApplicationDetail />
-              <DeleteUserModal />
-            </div>
-          </Table.Cell>
-        </Table.Row>
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {format(application.submitDate, "dd-MM-yyyy")}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+              <div className="flex items-center">
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
+                {application.status}
+              </div>
+            </Table.Cell>
+
+            <Table.Cell>
+              <div className="flex items-center gap-x-3 whitespace-nowrap">
+                <ViewApplicationDetail />
+                <DeleteUserModal />
+              </div>
+            </Table.Cell>
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table>
   );

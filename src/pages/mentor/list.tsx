@@ -9,27 +9,40 @@ import {
   TextInput,
 } from "flowbite-react";
 import type { FC } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   HiChevronLeft,
   HiChevronRight,
-  HiCog,
-  HiDocument,
   HiDocumentDownload,
-  HiDotsVertical,
-  HiExclamationCircle,
   HiHome,
   HiOutlineExclamationCircle,
   HiOutlineEye,
-  HiOutlinePencilAlt,
-  HiOutlineXCircle,
-  HiPlus,
   HiTrash,
   HiX,
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
+import { Pagination } from "../application/list";
 
+const applications = [
+  {
+    name: "Trần Quốc Khánh",
+    id: "001",
+    email: "JBkhanhtran@gmail.com",
+    submitDate: new Date(),
+    status: "Đang chờ duyệt",
+    avatar: "https://picsum.photos/200",
+  },
+  {
+    name: "Trần Quốc Khánh",
+    id: "002",
+
+    email: "JBkhanhtran@gmail.com",
+    submitDate: new Date(),
+    status: "Đang chờ duyệt",
+    avatar: "https://picsum.photos/200",
+  },
+];
 const ApplicationListPage: FC = function () {
   return (
     <NavbarSidebarLayout isFooter={false}>
@@ -67,13 +80,13 @@ const ApplicationListPage: FC = function () {
                 </div>
               </form>
               <div className="mt-3 flex space-x-1 pl-0 sm:mt-0 sm:pl-2">
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Configure</span>
-                  <HiCog className="text-2xl" />
-                </a>
+                {/* <a
+                    href="#"
+                    className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <span className="sr-only">Configure</span>
+                    <HiCog className="text-2xl" />
+                  </a> */}
                 <a
                   href="#"
                   className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
@@ -81,24 +94,24 @@ const ApplicationListPage: FC = function () {
                   <span className="sr-only">Delete</span>
                   <HiTrash className="text-2xl" />
                 </a>
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Purge</span>
-                  <HiExclamationCircle className="text-2xl" />
-                </a>
-                <a
-                  href="#"
-                  className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                >
-                  <span className="sr-only">Settings</span>
-                  <HiDotsVertical className="text-2xl" />
-                </a>
+                {/* <a
+                    href="#"
+                    className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <span className="sr-only">Purge</span>
+                    <HiExclamationCircle className="text-2xl" />
+                  </a> */}
+                {/* <a
+                    href="#"
+                    className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                  >
+                    <span className="sr-only">Settings</span>
+                    <HiDotsVertical className="text-2xl" />
+                  </a> */}
               </div>
             </div>
             <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
-              <AddUserModal />
+              {/* <AddUserModal /> */}
               <Button color="gray">
                 <div className="flex items-center gap-x-3">
                   <HiDocumentDownload className="text-xl" />
@@ -123,94 +136,186 @@ const ApplicationListPage: FC = function () {
   );
 };
 
-const AddUserModal: FC = function () {
+const styles = {
+  text: {
+    color: "white",
+  },
+};
+
+const data = [1, 2];
+const ViewApplicationDetail: FC = function () {
   const [isOpen, setOpen] = useState(false);
+  const [isShow, setShow] = useState(false);
+
+  const onImageClick = () => {
+    setShow(true);
+  };
+
+  const closeModal = () => {
+    if (isOpen && !isShow) {
+      setOpen(false);
+    }
+    setShow(false);
+  };
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const modal = document.getElementById("modal");
+      if (modal && !modal.contains(event.target as Node)) {
+        closeModal();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <>
       <Button color="primary" onClick={() => setOpen(true)}>
-        <div className="flex items-center gap-x-3">
-          <HiDocument className="text-xl" />
-          Đơn đã duyệt
+        <div className="flex items-center gap-x-2">
+          <HiOutlineEye className="text-lg" />
+          Xem
         </div>
       </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen}>
+      <Modal style={{}} onClose={() => setOpen(false)} show={isOpen}>
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Add new user</strong>
+          <strong>Thông tin ứng viên</strong>
         </Modal.Header>
         <Modal.Body>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="firstName">First name</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Bonnie"
-                />
+          <div
+            style={{
+              display: "flex",
+
+              flexDirection: "row",
+            }}
+          >
+            <img
+              style={{ marginRight: 20 }}
+              src="https://picsum.photos/300/200"
+              width={200}
+              height={160}
+            ></img>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+              <div>
+                <Label htmlFor="firstName">Họ và tên</Label>
+                <div className="mt-1">
+                  <p style={styles.text}>Trần Quốc Khánh</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="lastName">Ngày sinh</Label>
+                <div className="mt-1">
+                  <p style={styles.text}>27-10-2002</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="email">Số điện thoại</Label>
+                <div className="mt-1">
+                  <p style={styles.text}>0846202548</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="email">Email</Label>
+                <div className="mt-1">
+                  <p style={styles.text}>JBkhanhtran@gmail.com</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="phone">Nghề nghiệp</Label>
+                <div className="mt-1">
+                  <p style={styles.text}>Mobile Developer</p>
+                </div>
+              </div>
+              <div>
+                <Label htmlFor="company">Company</Label>
+                <div className="mt-1"></div>
               </div>
             </div>
-            <div>
-              <Label htmlFor="lastName">Last name</Label>
-              <div className="mt-1">
-                <TextInput id="lastName" name="lastName" placeholder="Green" />
-              </div>
+          </div>
+          <div style={{ marginTop: 12 }}>
+            <Label htmlFor="department">Kinh nghiệm làm việc</Label>
+            <div className="mt-1">
+              <p style={styles.text}>
+                Lorem ipsum dolor sit amet. Qui perspiciatis dolorem ut
+                asperiores laborum non reprehenderit voluptatem ut amet nostrum.
+                Hic fugiat sequi non mollitia rerum sit eaque illo ex voluptate
+                mollitia ut dignissimos assumenda. Eum autem cumque in voluptas
+                delectus vel dolores provident 33 quos aliquid?
+              </p>
             </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="email"
-                  name="email"
-                  placeholder="example@company.com"
-                  type="email"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone number</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="phone"
-                  name="phone"
-                  placeholder="e.g., +(12)3456 789"
-                  type="tel"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="department"
-                  name="department"
-                  placeholder="Development"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="company">Company</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="company"
-                  name="company"
-                  placeholder="Somewhere"
-                />
-              </div>
+            <Label style={{ marginTop: 12 }} htmlFor="department">
+              Chứng chỉ
+            </Label>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
+              {data.map(() => {
+                return (
+                  <div
+                    style={{ alignItems: "center", justifyContent: "center" }}
+                  >
+                    <img
+                      onClick={onImageClick}
+                      src="https://picsum.photos/200/300"
+                      style={{
+                        objectFit: "contain",
+                        backgroundColor: "tomato",
+                        margin: 0,
+                      }}
+                      width={"80%"}
+                      height={80}
+                    ></img>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button color="primary" onClick={() => setOpen(false)}>
-            Add user
+            Chấp thuận
           </Button>
         </Modal.Footer>
+      </Modal>
+
+      <Modal
+        onClick={(e) => e.stopPropagation()}
+        style={{}}
+        onClose={() => setShow(false)}
+        show={isShow}
+      >
+        <Modal.Body>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              style={{ marginRight: 20 }}
+              src="https://picsum.photos/200/300"
+              width={200}
+              height={160}
+            ></img>
+          </div>
+        </Modal.Body>
       </Modal>
     </>
   );
 };
 
 const AllApplications: FC = function () {
+  const [checkedItems, setCheckedItems] = useState({});
+
+  const handleChange = (event) => {
+    setCheckedItems({
+      ...checkedItems,
+      [event.target.name]: event.target.checked,
+    });
+  };
+  console.log("checkbox", checkedItems);
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -220,63 +325,75 @@ const AllApplications: FC = function () {
           </Label>
           <Checkbox id="select-all" name="select-all" />
         </Table.HeadCell>
+        <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên</Table.HeadCell>
         <Table.HeadCell>Ngày gửi</Table.HeadCell>
-        <Table.HeadCell>Country</Table.HeadCell>
         <Table.HeadCell>Trạng thái</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
       <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        <Table.Row className="hover:bg-gray-100 dark:hover:bg-gray-700">
-          <Table.Cell className="w-4 p-4">
-            <div className="flex items-center">
-              <Checkbox aria-describedby="checkbox-1" id="checkbox-1" />
-              <label htmlFor="checkbox-1" className="sr-only">
-                checkbox
-              </label>
-            </div>
-          </Table.Cell>
-          <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
-            <img
-              className="h-10 w-10 rounded-full"
-              src="../../images/users/neil-sims.png"
-              alt="Neil Sims avatar"
-            />
-            <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-              <div className="text-base font-semibold text-gray-900 dark:text-white">
-                Neil Sims
+        {applications.map((application, index) => (
+          <Table.Row
+            key={index}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <Table.Cell className="w-4 p-4">
+              <div className="flex items-center">
+                <Checkbox
+                  checked={checkedItems[`checkbox-${index}`] || false} // Sử dụng trạng thái từ state
+                  onChange={handleChange} // Thêm hàm xử lý sự kiện thay đổi
+                  aria-describedby={`checkbox-${index}`}
+                  id={`checkbox-${index}`}
+                  name={`checkbox-${index}`} // Thêm thuộc tính name để xác định checkbox cụ thể nào đang được thay đổi
+                />
+                <label htmlFor={`checkbox-${index}`} className="sr-only">
+                  checkbox
+                </label>
               </div>
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {application.id}
+            </Table.Cell>
+            <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={application.avatar}
+                alt={`${application.name} avatar`}
+              />
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                neil.sims@flowbite.com
+                <div className="text-base font-semibold text-gray-900 dark:text-white">
+                  {application.name}
+                </div>
+                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  {application.email}
+                </div>
               </div>
-            </div>
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            {format(new Date(), "dd-MM-yyyy")}
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-            {format(new Date(), "dd-MM-yyyy")}
-          </Table.Cell>
-          <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-            <div className="flex items-center">
-              <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
-              Đã duyệt
-            </div>
-          </Table.Cell>
-          <Table.Cell>
-            <div className="flex items-center gap-x-3 whitespace-nowrap">
-              <ViewApplicationDetail />
-              <DeleteUserModal />
-            </div>
-          </Table.Cell>
-        </Table.Row>
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {format(application.submitDate, "dd-MM-yyyy")}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+              <div className="flex items-center">
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
+                {application.status}
+              </div>
+            </Table.Cell>
+
+            <Table.Cell>
+              <div className="flex items-center gap-x-3 whitespace-nowrap">
+                <ViewApplicationDetail />
+                <DeleteUserModal />
+              </div>
+            </Table.Cell>
+          </Table.Row>
+        ))}
       </Table.Body>
     </Table>
   );
 };
 
-const ViewApplicationDetail: FC = function () {
+const ViewApplicationDetai1l: FC = function () {
   const [isOpen, setOpen] = useState(false);
 
   const viewApplication = () => {
@@ -424,55 +541,6 @@ const DeleteUserModal: FC = function () {
         </Modal.Body>
       </Modal>
     </>
-  );
-};
-
-export const Pagination: FC = function () {
-  return (
-    <div className="sticky bottom-0 right-0 w-full items-center border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex sm:justify-between">
-      <div className="mb-4 flex items-center sm:mb-0">
-        <a
-          href="#"
-          className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          <span className="sr-only">Trang trước</span>
-          <HiChevronLeft className="text-2xl" />
-        </a>
-        <a
-          href="#"
-          className="mr-2 inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          <span className="sr-only">Trang sau</span>
-          <HiChevronRight className="text-2xl" />
-        </a>
-        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-          Hiển thị&nbsp;
-          <span className="font-semibold text-gray-900 dark:text-white">
-            1-20
-          </span>
-          &nbsp;tr&nbsp;
-          <span className="font-semibold text-gray-900 dark:text-white">
-            2290
-          </span>
-        </span>
-      </div>
-      <div className="flex items-center space-x-3">
-        <a
-          href="#"
-          className="inline-flex flex-1 items-center justify-center rounded-lg bg-primary-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-        >
-          <HiChevronLeft className="mr-1 text-base" />
-          Trước
-        </a>
-        <a
-          href="#"
-          className="inline-flex flex-1 items-center justify-center rounded-lg bg-primary-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-        >
-          Sau
-          <HiChevronRight className="ml-1 text-base" />
-        </a>
-      </div>
-    </div>
   );
 };
 
