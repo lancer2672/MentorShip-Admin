@@ -38,6 +38,7 @@
     "sortablejs": "^1.15.0",
     "svgmap": "^2.10.1",
     "tailwind-datepicker-react": "^1.4.3",
+    "xlsx": "^0.18.5",
     "zustand": "^4.4.6"
   },
   "devDependencies": {
