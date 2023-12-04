@@ -26,6 +26,8 @@ import { format } from "date-fns";
 import { useApplicationStore } from "../../store/application";
 import { useUserStore } from "../../store/user";
 import { ApplicationStatus } from "../../constants";
+import { applicationToExcelData } from "../../utils/excelDataHelper";
+import { exportExcel } from "../../utils/excelHelper";
 // import { Datepicker } from "../../components/datepicker";
 
 // const data = [
@@ -147,6 +149,11 @@ const ApplicationListPage: FC = function () {
     },
   };
 
+  const handleExportFileExcel = () => {
+    const jsonData = applicationList.map((a) => applicationToExcelData(a));
+    console.log("jsonData", jsonData);
+    exportExcel(jsonData, "application_list");
+  };
   return (
     <NavbarSidebarLayout isFooter={false}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -195,7 +202,7 @@ const ApplicationListPage: FC = function () {
             </div>
             <div className="ml-auto flex items-center space-x-2 sm:space-x-3">
               {/* <AddUserModal /> */}
-              <Button color="gray">
+              <Button onClick={handleExportFileExcel} color="gray">
                 <div className="flex items-center gap-x-3">
                   <HiDocumentDownload className="text-xl" />
                   <span>Export</span>

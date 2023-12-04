@@ -85,7 +85,7 @@ const ExampleNavbar: FC = function () {
                 <HiSearch className="h-6 w-6" />
               </button>
               <NotificationBellDropdown />
-              <AppDrawerDropdown />
+              {/* <AppDrawerDropdown /> */}
               <DarkThemeToggle />
             </div>
             <div className="hidden lg:block">
