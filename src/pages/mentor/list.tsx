@@ -399,7 +399,7 @@ const ViewApplicationDetai1l: FC = function () {
   const viewApplication = () => {
     setOpen(true);
   };
-  const refuseApplication = () => {
+  const rejectApplication = () => {
     setOpen(true);
   };
   return (

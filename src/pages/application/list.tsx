@@ -23,50 +23,76 @@ import {
 } from "react-icons/hi";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
+import { useApplicationStore } from "../../store/application";
+import { useUserStore } from "../../store/user";
+import { ApplicationStatus } from "../../constants";
 // import { Datepicker } from "../../components/datepicker";
 
-const data = [
-  {
-    name: "Trần Quốc Khánh",
-    id: "001",
-    email: "JBkhanhtran@gmail.com",
-    submitDate: new Date(),
-    status: "Đang chờ duyệt",
-    avatar: "https://picsum.photos/200",
-  },
-  {
-    name: "Trần Quốc Khánh",
-    id: "002",
+// const data = [
+//   {
+//     name: "Trần Quốc Khánh",
+//     id: "001",
+//     email: "JBkhanhtran@gmail.com",
+//     submitDate: new Date(),
+//     status: "Đang chờ duyệt",
+//     avatar: "https://picsum.photos/200",
+//   },
+//   {
+//     name: "Trần Quốc Khánh",
+//     id: "002",
 
-    email: "JBkhanhtran@gmail.com",
-    submitDate: new Date(),
-    status: "Đang chờ duyệt",
-    avatar: "https://picsum.photos/200",
-  },
-];
+//     email: "JBkhanhtran@gmail.com",
+//     submitDate: new Date(),
+//     status: "Đang chờ duyệt",
+//     avatar: "https://picsum.photos/200",
+//   },
+// ];
 const ApplicationListPage: FC = function () {
   const [searchTerm, setSearchTerm] = useState("");
-  const [applications, setApplications] = useState(data);
   const [selectedDate, setSelectedDate] = useState(null);
   const [show, setShow] = useState(false);
+  const [applicationList, setApplicationList] = useState([]);
+  const { applications, setApplications, fetchApplications } =
+    useApplicationStore();
+  const { user, getUserById } = useUserStore();
 
   const handleClose = (state: boolean) => {
     setShow(state);
   };
-  useEffect(() => {
-    const delayDebounceFn = setTimeout(() => {
-      if (searchTerm) {
-        const results = data.filter((application) =>
-          application.name.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setApplications(results);
-      } else {
-        setApplications(data);
-      }
-    }, 1200);
 
-    return () => clearTimeout(delayDebounceFn);
+  useEffect(() => {
+    const fetchAndSetApplications = async () => {
+      try {
+        await fetchApplications();
+      } catch (er) {
+        console.error(er);
+      }
+    };
+
+    fetchAndSetApplications();
+  }, [fetchApplications, getUserById]);
+
+  useEffect(() => {
+    // const delayDebounceFn = setTimeout(() => {
+    //   if (searchTerm) {
+    //     const results = applications.filter((application) =>
+    //       application.name.toLowerCase().includes(searchTerm.toLowerCase())
+    //     );
+    //     results;
+    //   } else {
+    //     // setApplications(data);
+    //   }
+    // }, 1200);
+    // return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
+  useEffect(() => {
+    const applicationsWithUser = applications.map((application) => {
+      // const user = await getUserById(application.mentorId);
+      return { ...user, ...application };
+    });
+    setApplicationList(applicationsWithUser);
+    console.log("applicationWIghtUser", applicationsWithUser);
+  }, [applications]);
   console.log("applications", applications);
   const handleChange = (date) => {
     setSelectedDate(date);
@@ -183,7 +209,7 @@ const ApplicationListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllApplications applications={applications} />
+              <AllApplications applications={applicationList} />
             </div>
           </div>
         </div>
@@ -195,15 +221,14 @@ const ApplicationListPage: FC = function () {
 
 const styles = {
   text: {
-    color: "white",
+    color: "black",
   },
 };
 
-const dataImage = [1, 2];
-const ViewApplicationDetail: FC = function () {
+const ViewApplicationDetail: FC = function ({ application }) {
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
-
+  const { applications, updateApplicationStatus } = useApplicationStore();
   const onImageClick = () => {
     setShow(true);
   };
@@ -213,6 +238,14 @@ const ViewApplicationDetail: FC = function () {
       setOpen(false);
     }
     setShow(false);
+  };
+  const handleAcceptApplication = async () => {
+    try {
+      await updateApplicationStatus(application.id, ApplicationStatus.APPROVED);
+      setOpen(false);
+    } catch (er) {
+      console.error("update application er", er);
+    }
   };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -259,7 +292,7 @@ const ViewApplicationDetail: FC = function () {
               <div>
                 <Label htmlFor="firstName">Họ và tên</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>Trần Quốc Khánh</p>
+                  <p style={styles.text}>{application.displayName}</p>
                 </div>
               </div>
               <div>
@@ -271,7 +304,7 @@ const ViewApplicationDetail: FC = function () {
               <div>
                 <Label htmlFor="email">Số điện thoại</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>0846202548</p>
+                  <p style={styles.text}>{application.phoneNumber}</p>
                 </div>
               </div>
               <div>
@@ -307,21 +340,21 @@ const ViewApplicationDetail: FC = function () {
               Chứng chỉ
             </Label>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-              {dataImage.map(() => {
+              {application.imageUrls.map((url) => {
                 return (
                   <div
                     style={{ alignItems: "center", justifyContent: "center" }}
                   >
                     <img
                       onClick={onImageClick}
-                      src="https://picsum.photos/200/300"
+                      src={url}
                       style={{
-                        objectFit: "contain",
+                        objectFit: "cover",
                         backgroundColor: "tomato",
                         margin: 0,
                       }}
-                      width={"80%"}
-                      height={80}
+                      width={180}
+                      height={40}
                     ></img>
                   </div>
                 );
@@ -330,7 +363,11 @@ const ViewApplicationDetail: FC = function () {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button color="primary" onClick={() => setOpen(false)}>
+          <Button
+            style={{ alignSelf: "flex-end", marginLeft: "auto" }}
+            color="primary"
+            onClick={handleAcceptApplication}
+          >
             Chấp thuận
           </Button>
         </Modal.Footer>
@@ -368,7 +405,7 @@ const ViewApplicationDetail: FC = function () {
 
 const AllApplications: FC = function ({ applications }) {
   const [checkedItems, setCheckedItems] = useState({});
-
+  console.log("Allapplication", applications);
   const handleChange = (event) => {
     setCheckedItems({
       ...checkedItems,
@@ -431,7 +468,7 @@ const AllApplications: FC = function ({ applications }) {
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {format(application.submitDate, "dd-MM-yyyy")}
+              {format(new Date(application.createdAt), "dd-MM-yyyy")}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
               <div className="flex items-center">
@@ -442,8 +479,8 @@ const AllApplications: FC = function ({ applications }) {
 
             <Table.Cell>
               <div className="flex items-center gap-x-3 whitespace-nowrap">
-                <ViewApplicationDetail />
-                <DeleteUserModal />
+                <ViewApplicationDetail application={application} />
+                <DeleteUserModal application={application} />
               </div>
             </Table.Cell>
           </Table.Row>
@@ -459,7 +496,7 @@ const ViewApplicationDetai1l: FC = function () {
   const viewApplication = () => {
     setOpen(true);
   };
-  const refuseApplication = () => {
+  const rejectApplication = () => {
     setOpen(true);
   };
   return (
@@ -525,7 +562,7 @@ const ViewApplicationDetai1l: FC = function () {
               </div>
             </div>
             <div>
-              <Label htmlFor="company">Company</Label>
+              <Label htmlFor="company">Công ty</Label>
               <div className="mt-1">
                 <TextInput
                   id="company"
@@ -568,12 +605,21 @@ const ViewApplicationDetai1l: FC = function () {
   );
 };
 
-const DeleteUserModal: FC = function () {
+const DeleteUserModal: FC = function ({ application }) {
   const [isOpen, setOpen] = useState(false);
+  const { applications, updateApplicationStatus } = useApplicationStore();
 
+  const handleRejectApplication = async () => {
+    try {
+      await updateApplicationStatus(application.id, ApplicationStatus.REJECTED);
+      setOpen(false);
+    } catch (er) {
+      console.error("update application er", er);
+    }
+  };
   return (
     <>
-      <Button color="failure" onClick={() => setOpen(true)}>
+      <Button color="failure" onClick={handleRejectApplication}>
         <div className="flex items-center gap-x-2">
           <HiX className="text-lg" />
           Từ chối

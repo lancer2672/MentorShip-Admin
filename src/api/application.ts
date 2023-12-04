@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosClient from "../config/axios-client";
 
 const applicationApi = {
@@ -5,9 +6,10 @@ const applicationApi = {
     try {
       const url = "/application/getAllApplication";
       const res = await axiosClient.get(url);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
+
       return null;
     }
   },
@@ -15,7 +17,7 @@ const applicationApi = {
     try {
       const url = `/application/getApplicationById/${id}`;
       const res = await axiosClient.get(url);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       return null;
@@ -25,7 +27,7 @@ const applicationApi = {
     try {
       const url = `/application/updateApplicationStatus/${id}`;
       const res = await axiosClient.put(url, status);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       return null;
@@ -35,7 +37,7 @@ const applicationApi = {
     try {
       const url = `/application/deleteApplication/${id}`;
       const res = await axiosClient.delete(url);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       return null;
@@ -45,7 +47,7 @@ const applicationApi = {
     try {
       const url = "/application/createApplication";
       const res = await axiosClient.post(url, application);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       return null;
