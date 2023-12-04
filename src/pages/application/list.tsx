@@ -9,6 +9,7 @@ import {
   TextInput,
 } from "flowbite-react";
 import Datepicker from "tailwind-datepicker-react";
+import Select from "react-select";
 import type { FC } from "react";
 import { useState, useEffect } from "react";
 import {
@@ -30,30 +31,22 @@ import { applicationToExcelData } from "../../utils/excelDataHelper";
 import { exportExcel } from "../../utils/excelHelper";
 // import { Datepicker } from "../../components/datepicker";
 
-// const data = [
-//   {
-//     name: "Trần Quốc Khánh",
-//     id: "001",
-//     email: "JBkhanhtran@gmail.com",
-//     submitDate: new Date(),
-//     status: "Đang chờ duyệt",
-//     avatar: "https://picsum.photos/200",
-//   },
-//   {
-//     name: "Trần Quốc Khánh",
-//     id: "002",
+const dropdownOption = [
+  { value: "id", label: "Id" },
+  { value: "displayName", label: "Name" },
+];
 
-//     email: "JBkhanhtran@gmail.com",
-//     submitDate: new Date(),
-//     status: "Đang chờ duyệt",
-//     avatar: "https://picsum.photos/200",
-//   },
-// ];
 const ApplicationListPage: FC = function () {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDate, setSelectedDate] = useState(null);
-  const [show, setShow] = useState(false);
   const [applicationList, setApplicationList] = useState([]);
+
+  const [selectedOption, setSelectedOption] = useState({
+    value: "displayName",
+    label: "Name",
+  });
+
+  const [show, setShow] = useState(false);
   const { applications, setApplications, fetchApplications } =
     useApplicationStore();
   const { user, getUserById } = useUserStore();
@@ -75,17 +68,24 @@ const ApplicationListPage: FC = function () {
   }, [fetchApplications, getUserById]);
 
   useEffect(() => {
-    // const delayDebounceFn = setTimeout(() => {
-    //   if (searchTerm) {
-    //     const results = applications.filter((application) =>
-    //       application.name.toLowerCase().includes(searchTerm.toLowerCase())
-    //     );
-    //     results;
-    //   } else {
-    //     // setApplications(data);
-    //   }
-    // }, 1200);
-    // return () => clearTimeout(delayDebounceFn);
+    const applicationsWithUser = applications.map((application) => {
+      // const user = await getUserById(application.mentorId);
+      return { ...user, ...application };
+    });
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        const results = applicationsWithUser.filter((application) =>
+          application[selectedOption.value]
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        );
+        console.log("applicationList", results, applicationList, searchTerm);
+        setApplicationList(results);
+      } else {
+        setApplicationList(applicationsWithUser);
+      }
+    }, 1200);
+    return () => clearTimeout(delayDebounceFn);
   }, [searchTerm]);
   useEffect(() => {
     const applicationsWithUser = applications.map((application) => {
@@ -113,7 +113,7 @@ const ApplicationListPage: FC = function () {
   };
 
   const options = {
-    title: "Demo Title",
+    title: "Select date",
     autoHide: true,
     todayBtn: false,
     clearBtn: true,
@@ -191,6 +191,29 @@ const ApplicationListPage: FC = function () {
                   />
                 </div>
               </form>
+              <div style={{ marginRight: 8, minWidth: 200 }}>
+                <Select
+                  styles={{
+                    control: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: "white",
+                      backgroundColor: "#374151",
+                    }),
+                    singleValue: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: "white",
+                      backgroundColor: "#374151",
+                    }),
+                    option: (baseStyles, state) => ({
+                      ...baseStyles,
+                      color: "#374151",
+                    }),
+                  }}
+                  defaultValue={selectedOption}
+                  onChange={setSelectedOption}
+                  options={dropdownOption}
+                />
+              </div>
               <div className="mt-3 flex space-x-1 pl-0 sm:mt-0 sm:pl-2">
                 <Datepicker
                   options={options}
@@ -228,7 +251,7 @@ const ApplicationListPage: FC = function () {
 
 const styles = {
   text: {
-    color: "black",
+    color: "white",
   },
 };
 

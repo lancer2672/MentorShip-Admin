@@ -60,6 +60,7 @@ const SalesThisWeek: FC = function () {
         </div>
       </div>
       <SalesChart />
+      <MemberChart></MemberChart>
       <div className="mt-5 flex items-center justify-between border-t border-gray-200 pt-3 dark:border-gray-700 sm:pt-6">
         <Datepicker />
         <div className="shrink-0">
@@ -229,6 +230,106 @@ const SalesChart: FC = function () {
   return <Chart height={420} options={options} series={series} type="area" />;
 };
 
+const MemberChart: FC = function () {
+  const { mode } = useTheme();
+  const isDarkTheme = mode === "dark";
+
+  const borderColor = isDarkTheme ? "#374151" : "#F3F4F6";
+  const labelColor = isDarkTheme ? "#93ACAF" : "#6B7280";
+
+  const options: ApexCharts.ApexOptions = {
+    chart: {
+      type: "bar",
+      fontFamily: "Inter, sans-serif",
+      foreColor: labelColor,
+      toolbar: {
+        show: false,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: "55%",
+        endingShape: "rounded",
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      show: true,
+      width: 2,
+      colors: ["transparent"],
+    },
+    grid: {
+      show: true,
+      borderColor: borderColor,
+      strokeDashArray: 1,
+      padding: {
+        left: 35,
+        bottom: 15,
+      },
+    },
+    xaxis: {
+      categories: [
+        "01 Feb",
+        "02 Feb",
+        "03 Feb",
+        "04 Feb",
+        "05 Feb",
+        "06 Feb",
+        "07 Feb",
+      ],
+      labels: {
+        style: {
+          colors: [labelColor],
+          fontSize: "14px",
+          fontWeight: 500,
+        },
+      },
+      axisBorder: {
+        color: borderColor,
+      },
+      axisTicks: {
+        color: borderColor,
+      },
+    },
+    yaxis: {
+      labels: {
+        style: {
+          colors: [labelColor],
+          fontSize: "14px",
+          fontWeight: 500,
+        },
+        // formatter: function (value) {
+        //   return formatCurrency(value);
+        // },
+      },
+    },
+    fill: {
+      opacity: 1,
+    },
+    tooltip: {
+      style: {
+        fontSize: "14px",
+        fontFamily: "Inter, sans-serif",
+      },
+    },
+  };
+
+  const series = [
+    {
+      name: "Mentor",
+      data: [6356, 6218, 6156, 6526, 6356, 6256, 6056],
+    },
+    {
+      name: "Mentee",
+      data: [6556, 6725, 6424, 6356, 6586, 6756, 6616],
+    },
+  ];
+
+  return <Chart height={420} options={options} series={series} type="bar" />;
+};
 const NewProductsThisWeek: FC = function () {
   return (
     <div className="rounded-lg bg-white p-4 shadow dark:bg-gray-800 sm:p-6 xl:p-8">
