@@ -18,3 +18,18 @@ export type Mentor = {
   twitter: string;
   createdAt: Date;
 };
+export type Course = {
+  id: string;
+  mentorId: string;
+  price: number;
+  ratingStar: number;
+  createdAt: Date;
+  skillIds: string[];
+  deletedAt: Date | null;
+};
+export type Skill = {
+  id: string;
+  name: string;
+  createdAt: Date;
+  deletedAt: Date | null;
+};
