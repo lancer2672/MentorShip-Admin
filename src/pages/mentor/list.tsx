@@ -23,6 +23,7 @@ import {
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
 import { Pagination } from "../application/list";
+import { useMentorStore } from "../../store/mentor";
 
 const applications = [
   {
@@ -43,7 +44,49 @@ const applications = [
     avatar: "https://picsum.photos/200",
   },
 ];
-const ApplicationListPage: FC = function () {
+const MentorListPage: FC = function () {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [mentorList, setMentorList] = useState([]);
+
+  const [selectedOption, setSelectedOption] = useState({
+    value: "displayName",
+    label: "Name",
+  });
+
+  const [show, setShow] = useState(false);
+  const { mentors, setMentors, fetchMentors } = useMentorStore();
+
+  const handleClose = (state: boolean) => {
+    setShow(state);
+  };
+
+  useEffect(() => {
+    fetchMentors();
+  }, []);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+      if (searchTerm) {
+        const results = mentors.filter((mentor) =>
+          mentor[selectedOption.value]
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase())
+        );
+        console.log("mentorList", results, mentorList, searchTerm);
+        setMentorList(results);
+      } else {
+        setMentorList(mentors);
+      }
+    }, 1200);
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
+
+  useEffect(() => {
+    setMentorList(mentors);
+    console.log("mentors", mentors);
+  }, [mentors]);
+
   return (
     <NavbarSidebarLayout isFooter={false}>
       <div className="block items-center justify-between border-b border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex">
@@ -126,7 +169,7 @@ const ApplicationListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              <AllApplications />
+              <MentorList />
             </div>
           </div>
         </div>
@@ -306,7 +349,7 @@ const ViewApplicationDetail: FC = function () {
   );
 };
 
-const AllApplications: FC = function () {
+const MentorList: FC = function () {
   const [checkedItems, setCheckedItems] = useState({});
 
   const handleChange = (event) => {
@@ -327,8 +370,9 @@ const AllApplications: FC = function () {
         </Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên</Table.HeadCell>
-        <Table.HeadCell>Ngày gửi</Table.HeadCell>
-        <Table.HeadCell>Trạng thái</Table.HeadCell>
+        <Table.HeadCell>Nghề nghiệp</Table.HeadCell>
+        <Table.HeadCell>Ngày tham gia</Table.HeadCell>
+        <Table.HeadCell>Số khóa học</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
@@ -379,132 +423,22 @@ const AllApplications: FC = function () {
                 {application.status}
               </div>
             </Table.Cell>
-
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+              <div className="flex items-center">
+                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
+                {application.status}
+              </div>
+            </Table.Cell>
             <Table.Cell>
               <div className="flex items-center gap-x-3 whitespace-nowrap">
                 <ViewApplicationDetail />
-                <DeleteUserModal />
+                {/* <DeleteUserModal /> */}
               </div>
             </Table.Cell>
           </Table.Row>
         ))}
       </Table.Body>
     </Table>
-  );
-};
-
-const ViewApplicationDetai1l: FC = function () {
-  const [isOpen, setOpen] = useState(false);
-
-  const viewApplication = () => {
-    setOpen(true);
-  };
-  const rejectApplication = () => {
-    setOpen(true);
-  };
-  return (
-    <>
-      <Button color="primary" onClick={viewApplication}>
-        <div className="flex items-center gap-x-2">
-          <HiOutlineEye className="text-lg" />
-          Xem
-        </div>
-      </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen}>
-        <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Edit user</strong>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="firstName">First name</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Bonnie"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last name</Label>
-              <div className="mt-1">
-                <TextInput id="lastName" name="lastName" placeholder="Green" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="email"
-                  name="email"
-                  placeholder="example@company.com"
-                  type="email"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone number</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="phone"
-                  name="phone"
-                  placeholder="e.g., +(12)3456 789"
-                  type="tel"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="department"
-                  name="department"
-                  placeholder="Development"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="company">Company</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="company"
-                  name="company"
-                  placeholder="Somewhere"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordCurrent">Current password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordCurrent"
-                  name="passwordCurrent"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordNew">New password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordNew"
-                  name="passwordNew"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="primary" onClick={() => setOpen(false)}>
-            Save all
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
   );
 };
 
@@ -544,4 +478,4 @@ const DeleteUserModal: FC = function () {
   );
 };
 
-export default ApplicationListPage;
+export default MentorListPage;

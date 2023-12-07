@@ -10,6 +10,7 @@ import SignUpPage from "./pages/authentication/sign-up";
 import FlowbiteWrapper from "./components/flowbite-wrapper";
 import ApplicationListPage from "./pages/application/list";
 import TransactionListPage from "./pages/transaction/list";
+import MentorListPage from "./pages/mentor/list";
 
 const App: FC = function () {
   return (
@@ -18,6 +19,8 @@ const App: FC = function () {
         <Route element={<FlowbiteWrapper />}>
           <Route path="/" element={<DashboardPage />} index />
           <Route path="/application" element={<ApplicationListPage />} />
+          <Route path="/management/mentor" element={<MentorListPage />} />
+
           <Route path="/transaction" element={<TransactionListPage />} />
           <Route path="/authentication/sign-in" element={<SignInPage />} />
           <Route path="/authentication/sign-up" element={<SignUpPage />} />

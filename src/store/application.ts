@@ -1,5 +1,5 @@
 import create from "zustand";
-import applicationApi from "../api/application";
+import applicationApi from "../api/application-api";
 
 type Application = {
   id: string;
