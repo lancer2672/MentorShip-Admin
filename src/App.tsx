@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { Routes, Route } from "react-router";
 import { BrowserRouter } from "react-router-dom";
+import { useEffect } from "react";
 import DashboardPage from "./pages";
 import ForgotPasswordPage from "./pages/authentication/forgot-password";
 import ProfileLockPage from "./pages/authentication/profile-lock";
@@ -13,8 +14,21 @@ import TransactionListPage from "./pages/transaction/list";
 import MentorListPage from "./pages/mentor/list";
 import CourseListPage from "./pages/course/list";
 import SkillListPage from "./pages/skill/list";
+import firebaseInstance from "./service/firebaseService";
 
 const App: FC = function () {
+  useEffect(() => {
+    firebaseInstance.getToken();
+
+    firebaseInstance
+      .onMessageListener()
+      .then((data) => {
+        console.log("Receive foreground: ", data);
+      })
+      .catch((er) => {
+        console.log("error", er);
+      });
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
