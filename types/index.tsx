@@ -20,7 +20,8 @@ export type Mentor = {
 };
 export type Course = {
   id: string;
-  mentorId: string;
+  name: string;
+  mentor: Mentor;
   price: number;
   ratingStar: number;
   createdAt: Date;

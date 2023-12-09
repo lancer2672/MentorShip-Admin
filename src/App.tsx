@@ -22,8 +22,8 @@ const App: FC = function () {
           <Route path="/" element={<DashboardPage />} index />
           <Route path="/application" element={<ApplicationListPage />} />
           <Route path="/course" element={<CourseListPage />} />
-          <Route path="/skill" element={<SkillListPage />} />
           <Route path="/management/mentor" element={<MentorListPage />} />
+          <Route path="/management/skill" element={<SkillListPage />} />
 
           <Route path="/transaction" element={<TransactionListPage />} />
           <Route path="/authentication/sign-in" element={<SignInPage />} />

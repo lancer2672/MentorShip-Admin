@@ -14,8 +14,10 @@ const memberApi = {
   },
   getAll: async (role: RoleType) => {
     try {
-      const url = `/api/${role}/`;
+      console.log("role", role);
+      const url = `/api/${role}/get`;
       const res = await axiosClient.get(url);
+      console.log("response", res);
       return res.data.data;
     } catch (error) {
       console.error(error);

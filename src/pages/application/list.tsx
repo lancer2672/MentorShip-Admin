@@ -22,6 +22,7 @@ import {
   HiTrash,
   HiX,
 } from "react-icons/hi";
+import { FaCopy } from "react-icons/fa";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
 import { format } from "date-fns";
 import { useApplicationStore } from "../../store/application";
@@ -29,11 +30,12 @@ import { useUserStore } from "../../store/user";
 import { ApplicationStatus } from "../../constants";
 import { applicationToExcelData } from "../../utils/excelDataHelper";
 import { exportExcel } from "../../utils/excelHelper";
+import { handleCopyClick, shortenId } from "../../utils/dataHelper";
 // import { Datepicker } from "../../components/datepicker";
 
 const dropdownOption = [
   { value: "id", label: "Id" },
-  { value: "displayName", label: "Name" },
+  { value: "displayName", label: "Tên ứng viên" },
 ];
 
 const ApplicationListPage: FC = function () {
@@ -41,10 +43,7 @@ const ApplicationListPage: FC = function () {
   const [selectedDate, setSelectedDate] = useState(null);
   const [applicationList, setApplicationList] = useState([]);
 
-  const [selectedOption, setSelectedOption] = useState({
-    value: "displayName",
-    label: "Name",
-  });
+  const [selectedOption, setSelectedOption] = useState(dropdownOption[1]);
 
   const [show, setShow] = useState(false);
   const { applications, setApplications, fetchApplications } =
@@ -65,7 +64,7 @@ const ApplicationListPage: FC = function () {
     };
 
     fetchAndSetApplications();
-  }, [fetchApplications, getUserById]);
+  }, [fetchApplications]);
 
   useEffect(() => {
     const applicationsWithUser = applications.map((application) => {
@@ -86,7 +85,7 @@ const ApplicationListPage: FC = function () {
       }
     }, 1200);
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, applications]);
   useEffect(() => {
     const applicationsWithUser = applications.map((application) => {
       // const user = await getUserById(application.mentorId);
@@ -443,6 +442,7 @@ const AllApplications: FC = function ({ applications }) {
     });
   };
   console.log("checkbox", checkedItems);
+
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
@@ -480,7 +480,15 @@ const AllApplications: FC = function ({ applications }) {
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {application.id}
+              <div className="flex items-center">
+                {shortenId(application.id)}
+                <button
+                  onClick={() => handleCopyClick(application.id)}
+                  className="ml-2"
+                >
+                  <FaCopy className="text-xl" />
+                </button>
+              </div>
             </Table.Cell>
             <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
               <img
@@ -517,121 +525,6 @@ const AllApplications: FC = function ({ applications }) {
         ))}
       </Table.Body>
     </Table>
-  );
-};
-
-const ViewApplicationDetai1l: FC = function () {
-  const [isOpen, setOpen] = useState(false);
-
-  const viewApplication = () => {
-    setOpen(true);
-  };
-  const rejectApplication = () => {
-    setOpen(true);
-  };
-  return (
-    <>
-      <Button color="primary" onClick={viewApplication}>
-        <div className="flex items-center gap-x-2">
-          <HiOutlineEye className="text-lg" />
-          Xem
-        </div>
-      </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen}>
-        <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Edit user</strong>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="firstName">First name</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Bonnie"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last name</Label>
-              <div className="mt-1">
-                <TextInput id="lastName" name="lastName" placeholder="Green" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="email"
-                  name="email"
-                  placeholder="example@company.com"
-                  type="email"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone number</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="phone"
-                  name="phone"
-                  placeholder="e.g., +(12)3456 789"
-                  type="tel"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="department"
-                  name="department"
-                  placeholder="Development"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="company">Công ty</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="company"
-                  name="company"
-                  placeholder="Somewhere"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordCurrent">Current password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordCurrent"
-                  name="passwordCurrent"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordNew">New password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordNew"
-                  name="passwordNew"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="primary" onClick={() => setOpen(false)}>
-            Save all
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
   );
 };
 

@@ -8,16 +8,10 @@ import {
   HiBookOpen,
   HiChartPie,
   HiDocument,
-  HiInboxIn,
-  HiInformationCircle,
-  HiLockClosed,
   HiOutlineAdjustments,
   HiOutlineCreditCard,
-  HiOutlineReceiptRefund,
+  HiOutlineShoppingBag,
   HiSearch,
-  HiShoppingBag,
-  HiUsers,
-  HiViewGrid,
 } from "react-icons/hi";
 
 import { useSidebarContext } from "../context/SidebarContext";
@@ -119,7 +113,7 @@ const ExampleSidebar: FC = function () {
                         : ""
                     }
                   >
-                    Mentee
+                    Học viên
                   </Sidebar.Item>
                   <Sidebar.Item
                     href="/management/skill"
@@ -142,6 +136,17 @@ const ExampleSidebar: FC = function () {
                   }
                 >
                   Thông tin giao dịch
+                </Sidebar.Item>
+                <Sidebar.Item
+                  href="/transaction"
+                  icon={HiOutlineShoppingBag}
+                  className={
+                    "/transaction" === currentPage
+                      ? "bg-gray-100 dark:bg-gray-700"
+                      : ""
+                  }
+                >
+                  Tạo khuyến mãi
                 </Sidebar.Item>
               </Sidebar.ItemGroup>
             </Sidebar.Items>

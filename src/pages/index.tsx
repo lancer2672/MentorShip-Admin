@@ -19,13 +19,13 @@ const DashboardPage: FC = function () {
           <VisitorsThisWeek />
           <UserSignupsThisWeek />
         </div>
-        <div className="my-4 grid grid-cols-1 xl:gap-4 2xl:grid-cols-3">
+        {/* <div className="my-4 grid grid-cols-1 xl:gap-4 2xl:grid-cols-3">
           <SessionsByCountry />
           <div className="grid gap-4 sm:grid-cols-2 2xl:grid-cols-1">
             <LatestCustomers />
             <AcquisitionOverview />
           </div>
-        </div>
+        </div> */}
       </div>
     </NavbarSidebarLayout>
   );
@@ -40,7 +40,7 @@ const SalesThisWeek: FC = function () {
             $45,385
           </span>
           <h3 className="text-base font-normal text-gray-600 dark:text-gray-400">
-            Sales this week
+            Sales Report
           </h3>
         </div>
         <div className="flex flex-1 items-center justify-end text-base font-bold text-green-600 dark:text-green-400">
@@ -220,11 +220,11 @@ const SalesChart: FC = function () {
       data: [6356, 6218, 6156, 6526, 6356, 6256, 6056],
       color: "#1A56DB",
     },
-    {
-      name: "Revenue (previous period)",
-      data: [6556, 6725, 6424, 6356, 6586, 6756, 6616],
-      color: "#FDBA8C",
-    },
+    // {
+    //   name: "Revenue (previous period)",
+    //   data: [6556, 6725, 6424, 6356, 6586, 6756, 6616],
+    //   color: "#FDBA8C",
+    // },
   ];
 
   return <Chart height={420} options={options} series={series} type="area" />;
@@ -323,7 +323,7 @@ const MemberChart: FC = function () {
       data: [6356, 6218, 6156, 6526, 6356, 6256, 6056],
     },
     {
-      name: "Mentee",
+      name: "Học viên",
       data: [6556, 6725, 6424, 6356, 6586, 6756, 6616],
     },
   ];

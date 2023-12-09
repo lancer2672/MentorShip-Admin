@@ -27,21 +27,21 @@ import { format } from "date-fns";
 import { useCourseStore } from "../../store/course";
 import { useUserStore } from "../../store/user";
 import { exportExcel } from "../../utils/excelHelper";
+import { handleCopyClick, shortenId } from "../../utils/dataHelper";
+import { FaCopy } from "react-icons/fa";
+import { Pagination } from "../application/list";
 // import { Datepicker } from "../../components/datepicker";
 
 const dropdownOption = [
   { value: "id", label: "Id" },
-  { value: "displayName", label: "Name" },
+  { value: "name", label: "Tên khoá học" },
 ];
 
 const CourseListPage: FC = function () {
   const [searchTerm, setSearchTerm] = useState("");
   const [courseList, setCourseList] = useState([]);
 
-  const [selectedOption, setSelectedOption] = useState({
-    value: "displayName",
-    label: "Name",
-  });
+  const [selectedOption, setSelectedOption] = useState(dropdownOption[1]);
 
   const [show, setShow] = useState(false);
   const { courses, setCourses, fetchCourses } = useCourseStore();
@@ -82,11 +82,14 @@ const CourseListPage: FC = function () {
       }
     }, 1200);
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm]);
+  }, [searchTerm, courses]);
   useEffect(() => {
     const coursesWithUser = courses.map((course) => {
       // const user = await getUserById(course.mentorId);
-      return { ...user, ...course };
+      return {
+        ...course,
+        mentor: user,
+      };
     });
     setCourseList(coursesWithUser);
     console.log("courseWIghtUser", coursesWithUser);
@@ -110,11 +113,11 @@ const CourseListPage: FC = function () {
                   <span className="dark:text-white">Home</span>
                 </div>
               </Breadcrumb.Item>
-              <Breadcrumb.Item href="/course">Đơn ứng tuyển</Breadcrumb.Item>
+              <Breadcrumb.Item href="/course">Khoá học</Breadcrumb.Item>
               {/* <Breadcrumb.Item>List</Breadcrumb.Item> */}
             </Breadcrumb>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
-              Đơn ứng tuyển
+              Khoá học
             </h1>
           </div>
           <div className="sm:flex">
@@ -127,7 +130,7 @@ const CourseListPage: FC = function () {
                   <TextInput
                     id="users-search"
                     name="users-search"
-                    placeholder="Tìm đơn ứng tuyển"
+                    placeholder="Tìm khoá học"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                   />
@@ -255,7 +258,7 @@ const ViewCourseDetail: FC = function ({ course }) {
               <div>
                 <Label htmlFor="firstName">Họ và tên</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>{course.displayName}</p>
+                  <p style={styles.text}>{course.name}</p>
                 </div>
               </div>
               <div>
@@ -366,9 +369,11 @@ const AllCourses: FC = function ({ courses }) {
           <Checkbox id="select-all" name="select-all" />
         </Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
-        <Table.HeadCell>Tên</Table.HeadCell>
-        <Table.HeadCell>Ngày gửi</Table.HeadCell>
-        <Table.HeadCell>Trạng thái</Table.HeadCell>
+        <Table.HeadCell>Tên khoá học</Table.HeadCell>
+        <Table.HeadCell>Mentor</Table.HeadCell>
+        <Table.HeadCell>Rating</Table.HeadCell>
+        <Table.HeadCell>Học phí</Table.HeadCell>
+        <Table.HeadCell>Số học viên</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
@@ -393,7 +398,15 @@ const AllCourses: FC = function ({ courses }) {
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {course.id}
+              <div className="flex items-center">
+                {shortenId(course.id)}
+                <button
+                  onClick={() => handleCopyClick(course.id)}
+                  className="ml-2"
+                >
+                  <FaCopy className="text-xl" />
+                </button>
+              </div>
             </Table.Cell>
             <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
               <img
@@ -423,7 +436,6 @@ const AllCourses: FC = function ({ courses }) {
             <Table.Cell>
               <div className="flex items-center gap-x-3 whitespace-nowrap">
                 <ViewCourseDetail course={course} />
-                <DeleteUserModal course={course} />
               </div>
             </Table.Cell>
           </Table.Row>
@@ -545,99 +557,6 @@ const ViewCourseDetai1l: FC = function () {
         </Modal.Footer>
       </Modal>
     </>
-  );
-};
-
-const DeleteUserModal: FC = function ({ course }) {
-  const [isOpen, setOpen] = useState(false);
-  const { courses } = useCourseStore();
-
-  const handleRejectCourse = async () => {
-    try {
-      setOpen(false);
-    } catch (er) {
-      console.error("update course er", er);
-    }
-  };
-  return (
-    <>
-      <Button color="failure" onClick={handleRejectCourse}>
-        <div className="flex items-center gap-x-2">
-          <HiX className="text-lg" />
-          Từ chối
-        </div>
-      </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen} size="md">
-        <Modal.Header className="px-6 pb-0 pt-6">
-          <span className="sr-only">Delete user</span>
-        </Modal.Header>
-        <Modal.Body className="px-6 pb-6 pt-0">
-          <div className="flex flex-col items-center gap-y-6 text-center">
-            <HiOutlineExclamationCircle className="text-7xl text-red-500" />
-            <p className="text-xl text-gray-500">
-              Are you sure you want to delete this user?
-            </p>
-            <div className="flex items-center gap-x-3">
-              <Button color="failure" onClick={() => setOpen(false)}>
-                Yes, I'm sure
-              </Button>
-              <Button color="gray" onClick={() => setOpen(false)}>
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
-};
-
-export const Pagination: FC = function () {
-  return (
-    <div className="sticky bottom-0 right-0 w-full items-center border-t border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800 sm:flex sm:justify-between">
-      <div className="mb-4 flex items-center sm:mb-0">
-        <a
-          href="#"
-          className="inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          <span className="sr-only">Trang trước</span>
-          <HiChevronLeft className="text-2xl" />
-        </a>
-        <a
-          href="#"
-          className="mr-2 inline-flex cursor-pointer justify-center rounded p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-        >
-          <span className="sr-only">Trang sau</span>
-          <HiChevronRight className="text-2xl" />
-        </a>
-        <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-          Hiển thị&nbsp;
-          <span className="font-semibold text-gray-900 dark:text-white">
-            1-20
-          </span>
-          &nbsp;tr&nbsp;
-          <span className="font-semibold text-gray-900 dark:text-white">
-            2290
-          </span>
-        </span>
-      </div>
-      <div className="flex items-center space-x-3">
-        <a
-          href="#"
-          className="inline-flex flex-1 items-center justify-center rounded-lg bg-primary-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-        >
-          <HiChevronLeft className="mr-1 text-base" />
-          Trước
-        </a>
-        <a
-          href="#"
-          className="inline-flex flex-1 items-center justify-center rounded-lg bg-primary-700 px-3 py-2 text-center text-sm font-medium text-white hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-        >
-          Sau
-          <HiChevronRight className="ml-1 text-base" />
-        </a>
-      </div>
-    </div>
   );
 };
 
