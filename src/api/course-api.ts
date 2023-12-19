@@ -1,5 +1,5 @@
-import { Course } from "../../types";
 import axiosClient from "../config/axios-client";
+import { Course } from "../types";
 
 const courseApi = {
   getById: async (id: string) => {

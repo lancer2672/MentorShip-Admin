@@ -1,15 +1,6 @@
 import create from "zustand";
 import applicationApi from "../api/application-api";
-
-type Application = {
-  id: string;
-  mentorId: string;
-  createdAt: Date;
-  status: string;
-  imageUrls: string[];
-  description: string;
-};
-
+import { Application } from "../types";
 type ApplicationState = {
   applications: Application[];
   setApplications: (applications: Application[]) => void;
@@ -27,7 +18,7 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
       const applications = await applicationApi.getAll();
       console.log("ApplicationData", applications);
       set((state) => ({
-        applications,
+        applications: applications || [],
       }));
     } catch (error) {
       console.error(error);

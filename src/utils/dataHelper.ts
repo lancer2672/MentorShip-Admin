@@ -1,3 +1,5 @@
+import { ApprovalStatus } from "../constants";
+
 export const transformApplicationData = (data) => {
   if (Array.isArray(data)) {
     return data.map((item) => ({
@@ -26,5 +28,18 @@ export const handleCopyClick = async (value) => {
     console.log("text copied to clipboard");
   } catch (err) {
     console.error("Failed to copy text: ", err);
+  }
+};
+
+export const mapStatus = (status) => {
+  switch (status) {
+    case ApprovalStatus.PENDING:
+      return "Đang chờ";
+    case ApprovalStatus.APPROVED:
+      return "Chấp thuận";
+    case ApprovalStatus.APPROVED:
+      return "Từ chối";
+    default:
+      return null;
   }
 };

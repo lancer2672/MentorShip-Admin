@@ -1,6 +1,6 @@
 import create from "zustand";
 import skillApi from "../api/skill-api";
-import { Skill } from "../../types";
+import { Skill } from "../types";
 
 type SkillState = {
   skills: Skill[];
