@@ -1,6 +1,6 @@
 import create from "zustand";
 import courseApi from "../api/course-api";
-import { Course } from "../../types";
+import { Course } from "../types";
 
 type CourseState = {
   courses: Course[];

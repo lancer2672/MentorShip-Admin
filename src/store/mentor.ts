@@ -1,6 +1,6 @@
 import create from "zustand";
 import memberApi from "../api/member-api";
-import { RoleType } from "../../types";
+import { RoleType } from "../types";
 
 type Mentor = {
   id: string;

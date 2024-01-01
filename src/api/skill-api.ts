@@ -1,5 +1,5 @@
-import { Skill } from "../../types";
 import axiosClient from "../config/axios-client";
+import { Skill } from "../types";
 
 const skillApi = {
   getById: async (id: string) => {

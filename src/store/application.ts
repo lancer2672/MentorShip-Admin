@@ -1,18 +1,10 @@
 import create from 'zustand';
 import applicationApi from '../api/application-api';
-import {ApplicationStatus} from '../constants';
+import {ApprovalStatus} from '../constants';
 import sendMail from '../service/sendMail';
 import firebaseInstance from '../service/firebaseService';
 import {generateRandomPassword} from '../utils/dataHelper';
-
-type Application = {
-  id: string;
-  mentorId: string;
-  createdAt: Date;
-  status: string;
-  imageUrls: string[];
-  description: string;
-};
+import {Application} from '../types';
 
 type ApplicationState = {
   applications: Application[];
@@ -31,7 +23,7 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
       const applications = await applicationApi.getAll();
       console.log('ApplicationData', applications);
       set((state) => ({
-        applications,
+        applications: applications || [],
       }));
     } catch (error) {
       console.error(error);
@@ -55,7 +47,7 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
         id,
         status
       );
-      if (status === ApplicationStatus.APPROVED) {
+      if (status === ApprovalStatus.APPROVED) {
         const application = await applicationApi.getApplicationById(id);
         const password = generateRandomPassword();
         const mentor = await firebaseInstance.createAccount(
@@ -79,7 +71,7 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
           password +
           '<br>';
         sendMail(updatedApplication.mentorProfile.email, subject, content);
-      } else if (status === ApplicationStatus.REJECTED) {
+      } else if (status === ApprovalStatus.REJECTED) {
         const subject = 'Đơn đăng kí bị từ chối';
         const content = 'Đơn đăng kí của bạn đã bị từ chối. ';
         sendMail(updatedApplication.mentorProfile.email, subject, content);

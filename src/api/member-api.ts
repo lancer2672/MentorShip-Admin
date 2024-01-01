@@ -1,5 +1,5 @@
 import axiosClient from "../config/axios-client";
-import { RoleType } from "../../types";
+import { RoleType } from "../types";
 
 const memberApi = {
   getById: async (role: RoleType, id: string) => {

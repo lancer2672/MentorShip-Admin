@@ -1,4 +1,3 @@
-import axios from "axios";
 import axiosClient from "../config/axios-client";
 
 const applicationApi = {
@@ -9,7 +8,6 @@ const applicationApi = {
       return res.data.data;
     } catch (error) {
       console.error(error);
-
       return null;
     }
   },

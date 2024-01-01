@@ -18,7 +18,6 @@ import {
   HiChevronRight,
   HiDocumentDownload,
   HiHome,
-  HiOutlineExclamationCircle,
   HiOutlineEye,
   HiTrash,
   HiX,
@@ -28,7 +27,7 @@ import NavbarSidebarLayout from '../../layouts/navbar-sidebar';
 import {format} from 'date-fns';
 import {useApplicationStore} from '../../store/application';
 import {useUserStore} from '../../store/user';
-import {ApplicationStatus} from '../../constants';
+import {ApprovalStatus} from '../../constants';
 import {applicationToExcelData} from '../../utils/excelDataHelper';
 import {exportExcel} from '../../utils/excelHelper';
 import {handleCopyClick, shortenId} from '../../utils/dataHelper';
@@ -57,6 +56,47 @@ const ApplicationListPage: FC = function () {
     setShow(state);
   };
 
+  // const createApplications = async () => {
+  //   // Tạo các mentor
+  //   const mentor1 = {
+  //     id: null,
+  //     applicationId: null,
+  //     jobTitle: "Software Engineer",
+  //     avatar: "",
+  //     email: "",
+  //     firstName: "Nguyen",
+  //     lastName: "A",
+  //     company: "",
+  //     location: "",
+  //     phoneNumber: "",
+  //     dateOfBirth: null,
+  //     bio: "",
+  //     linkedIn: "",
+  //     twitter: "",
+  //     skillIds: ["657eeb8c6d4e50c8c5649cbf", "657eeb8d6d4e50c8c5649cc0"], // Giả sử "id1", "657eeb8d6d4e50c8c5649cc0", "id3" là các ID của kỹ năng trong lĩnh vực Công nghệ
+  //     imageUrls: [],
+  //     createdAt: new Date(),
+  //   };
+
+  //   // ... other mentors ...
+
+  //   const application1 = {
+  //     mentorProfile: mentor1,
+  //     reasonToBeMentor:
+  //       "I want to share my knowledge and experience in software engineering.",
+  //   };
+
+  //   // ... other applications ...
+
+  //   // Sử dụng API để lưu đơn ứng tuyển vào cơ sở dữ liệu
+  //   await applicationApi.createApplication(application1);
+  //   // ... other API calls ...
+  // };
+
+  // useEffect(() => {
+  //   createApplications();
+  // }, []);
+
   useEffect(() => {
     const fetchAndSetApplications = async () => {
       try {
@@ -70,49 +110,38 @@ const ApplicationListPage: FC = function () {
   }, [fetchApplications]);
 
   useEffect(() => {
-    const applicationsWithUser = applications.map((application) => {
-      // const user = await getUserById(application.mentorId);
-      return {...user, ...application};
-    });
-    console.log('applicationWIghtUser', applicationsWithUser);
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
-        const results = applicationsWithUser.filter((application) =>
+        const results = applications.filter((application) =>
           application[selectedOption.value]
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
         );
-        console.log('applicationList', results, applicationList, searchTerm);
         setApplicationList(results);
       } else {
-        setApplicationList(applicationsWithUser);
+        setApplicationList(applications);
       }
     }, 1200);
     return () => clearTimeout(delayDebounceFn);
   }, [searchTerm, applications]);
   useEffect(() => {
-    const applicationsWithUser = applications.map((application) => {
-      // const user = await getUserById(application.mentorId);
-      return {...user, ...application};
-    });
-    setApplicationList(applicationsWithUser);
-    console.log('applicationWIghtUser', applicationsWithUser);
+    setApplicationList(applications);
   }, [applications]);
-  console.log('applications', applications);
+  console.log('setApplicationList', applications);
   const handleChange = (date) => {
     setSelectedDate(date);
     console.log(('seletedDate', date.getTime()));
-    const filtered = data.filter((application) => {
-      const month = application.submitDate.getMonth();
-      const year = application.submitDate.getFullYear();
-      const d = application.submitDate.getDate();
+    const filtered = applications.filter((application) => {
+      const month = application.applicationDate.getMonth();
+      const year = application.applicationDate.getFullYear();
+      const d = application.applicationDate.getDate();
 
-      const submitDate = new Date(year, month, d).getTime();
+      const submitDateTimeStamp = new Date(year, month, d).getTime();
 
-      console.log('submitDate', submitDate, date.getTime());
-      return submitDate === date.getTime();
+      console.log('submitDate', submitDateTimeStamp, date.getTime());
+      return submitDateTimeStamp === date.getTime();
     });
-    setApplications(filtered);
+    setApplicationList(filtered);
   };
 
   const options = {
@@ -258,7 +287,13 @@ const styles = {
   },
 };
 
-const ViewApplicationDetail: FC = function ({application}) {
+type ViewApplicationDetailProps = {
+  application: Application;
+};
+const ViewApplicationDetail: FC = function ({
+  application,
+}: ViewApplicationDetailProps) {
+  const profileInfor = application.mentorProfile;
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
   const {applications, updateApplicationStatus} = useApplicationStore();
@@ -274,8 +309,7 @@ const ViewApplicationDetail: FC = function ({application}) {
   };
   const handleAcceptApplication = async () => {
     try {
-      await updateApplicationStatus(application.id, ApplicationStatus.APPROVED);
-
+      await updateApplicationStatus(application.id, ApprovalStatus.APPROVED);
       setOpen(false);
     } catch (er) {
       console.error('update application er', er);
@@ -328,8 +362,7 @@ const ViewApplicationDetail: FC = function ({application}) {
                 <Label htmlFor="firstName">Họ và tên</Label>
                 <div className="mt-1">
                   <p style={styles.text}>
-                    {application.mentorProfile.firstName}{' '}
-                    {application.mentorProfile.lastName}
+                    {profileInfor.firstName} {profileInfor.lastName}
                   </p>
                 </div>
               </div>
@@ -347,34 +380,24 @@ const ViewApplicationDetail: FC = function ({application}) {
               <div>
                 <Label htmlFor="email">Số điện thoại</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>
-                    {application.mentorProfile.phoneNumber}
-                  </p>
+                  <p style={styles.text}>{profileInfor.phoneNumber}</p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>{application.mentorProfile.email}</p>
+                  <p style={styles.text}>{profileInfor.email}</p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="phone">Nghề nghiệp</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>
-                    {application.mentorProfile.jobTitle}
-                  </p>
+                  <p style={styles.text}>{profileInfor.jobTitle}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="company">Kĩ năng</Label>
-                <div className="mt-1">
-                  {/* <p style={styles.text}>
-                    {application.mentorProfile.skillIds.map((skill) => {
-                      return <div>{skill}</div>;
-                    })}
-                  </p> */}
-                </div>
+                <Label htmlFor="company">Company</Label>
+                <div className="mt-1">{profileInfor.company}</div>
               </div>
             </div>
           </div>
@@ -387,15 +410,17 @@ const ViewApplicationDetail: FC = function ({application}) {
             }}
           >
             <div>
-              <Label htmlFor="department">Thành tựu</Label>
+              <Label htmlFor="department">Lý lịch</Label>
               <div className="mt-1">
-                <p style={styles.text}>{application.achievement}</p>
+                <p style={styles.text}>{profileInfor.bio}</p>
               </div>
             </div>
             <div>
-              <Label htmlFor="department">Lý do đăng kí</Label>
+              <Label style={{marginTop: 12}} htmlFor="department">
+                Chứng chỉ
+              </Label>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-                {application.mentorProfile.imageUrls.map((url) => {
+                {profileInfor.imageUrls.map((url) => {
                   return (
                     <div
                       style={{alignItems: 'center', justifyContent: 'center'}}
@@ -472,11 +497,11 @@ const AllApplications: FC = function ({applications}) {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case ApplicationStatus.PENDING:
+      case ApprovalStatus.PENDING:
         return 'bg-yellow-500'; // Hoặc màu khác tùy thuộc vào yêu cầu của bạn
-      case ApplicationStatus.APPROVED:
+      case ApprovalStatus.APPROVED:
         return 'bg-green-400';
-      case ApplicationStatus.REJECTED:
+      case ApprovalStatus.REJECTED:
         return 'bg-red-500';
       default:
         return '';
@@ -485,11 +510,11 @@ const AllApplications: FC = function ({applications}) {
 
   const getStatusText = (status) => {
     switch (status) {
-      case ApplicationStatus.PENDING:
+      case ApprovalStatus.PENDING:
         return 'Đang chờ duyệt';
-      case ApplicationStatus.APPROVED:
+      case ApprovalStatus.APPROVED:
         return 'Đã duyệt';
-      case ApplicationStatus.REJECTED:
+      case ApprovalStatus.REJECTED:
         return 'Bị từ chối';
       default:
         return '';
@@ -559,6 +584,7 @@ const AllApplications: FC = function ({applications}) {
                 </div>
                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   {application.mentorProfile.email}
+                  {application.mentorProfile.email}
                 </div>
               </div>
             </Table.Cell>
@@ -579,7 +605,7 @@ const AllApplications: FC = function ({applications}) {
             <Table.Cell>
               <div className="flex items-center gap-x-3 whitespace-nowrap">
                 <ViewApplicationDetail application={application} />
-                <DeleteUserModal application={application} />
+                <RejectButton application={application} />
               </div>
             </Table.Cell>
           </Table.Row>
@@ -595,7 +621,7 @@ const DeleteUserModal: FC = function ({application}) {
 
   const handleRejectApplication = async () => {
     try {
-      await updateApplicationStatus(application.id, ApplicationStatus.REJECTED);
+      await updateApplicationStatus(application.id, ApprovalStatus.REJECTED);
       setOpen(false);
     } catch (er) {
       console.error('update application er', er);
@@ -609,27 +635,6 @@ const DeleteUserModal: FC = function ({application}) {
           Từ chối
         </div>
       </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen} size="md">
-        <Modal.Header className="px-6 pb-0 pt-6">
-          <span className="sr-only">Delete user</span>
-        </Modal.Header>
-        <Modal.Body className="px-6 pb-6 pt-0">
-          <div className="flex flex-col items-center gap-y-6 text-center">
-            <HiOutlineExclamationCircle className="text-7xl text-red-500" />
-            <p className="text-xl text-gray-500">
-              Are you sure you want to delete this user?
-            </p>
-            <div className="flex items-center gap-x-3">
-              <Button color="failure" onClick={() => setOpen(false)}>
-                Yes, I'm sure
-              </Button>
-              <Button color="gray" onClick={() => setOpen(false)}>
-                No, cancel
-              </Button>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
     </>
   );
 };

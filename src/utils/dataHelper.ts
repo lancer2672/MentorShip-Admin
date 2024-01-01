@@ -1,3 +1,5 @@
+import {ApprovalStatus} from '../constants';
+
 export const transformApplicationData = (data) => {
   if (Array.isArray(data)) {
     return data.map((item) => ({
@@ -40,4 +42,17 @@ export const generateRandomPassword = () => {
   }
 
   return password;
+};
+
+export const mapStatus = (status) => {
+  switch (status) {
+    case ApprovalStatus.PENDING:
+      return 'Đang chờ';
+    case ApprovalStatus.APPROVED:
+      return 'Chấp thuận';
+    case ApprovalStatus.APPROVED:
+      return 'Từ chối';
+    default:
+      return null;
+  }
 };

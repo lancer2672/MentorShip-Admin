@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { format } from "date-fns";
 import {
   Breadcrumb,
   Button,
@@ -8,25 +9,19 @@ import {
   Table,
   TextInput,
 } from "flowbite-react";
-import Datepicker from "tailwind-datepicker-react";
-import Select from "react-select";
 import type { FC } from "react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
-  HiChevronLeft,
-  HiChevronRight,
   HiDocumentDownload,
   HiHome,
   HiOutlineExclamationCircle,
   HiOutlineEye,
-  HiTrash,
   HiX,
 } from "react-icons/hi";
+import Select from "react-select";
 import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { format } from "date-fns";
 import { useSkillStore } from "../../store/skill";
 import { useUserStore } from "../../store/user";
-import { exportExcel } from "../../utils/excelHelper";
 // import { Datepicker } from "../../components/datepicker";
 
 const dropdownOption = [
@@ -50,6 +45,10 @@ const SkillListPage: FC = function () {
   const handleClose = (state: boolean) => {
     setShow(state);
   };
+
+  useEffect(() => {
+    createApplications();
+  }, []);
 
   useEffect(() => {
     const fetchAndSetSkills = async () => {
