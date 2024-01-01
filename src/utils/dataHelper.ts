@@ -23,8 +23,21 @@ export const shortenId = (id) => {
 export const handleCopyClick = async (value) => {
   try {
     await navigator.clipboard.writeText(value);
-    console.log("text copied to clipboard");
+    console.log('text copied to clipboard');
   } catch (err) {
-    console.error("Failed to copy text: ", err);
+    console.error('Failed to copy text: ', err);
   }
+};
+
+export const generateRandomPassword = () => {
+  const charset =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let password = '';
+
+  for (let i = 0; i < 10; i++) {
+    const randomIndex = Math.floor(Math.random() * charset.length);
+    password += charset.charAt(randomIndex);
+  }
+
+  return password;
 };

@@ -1,5 +1,9 @@
-import create from "zustand";
-import applicationApi from "../api/application-api";
+import create from 'zustand';
+import applicationApi from '../api/application-api';
+import {ApplicationStatus} from '../constants';
+import sendMail from '../service/sendMail';
+import firebaseInstance from '../service/firebaseService';
+import {generateRandomPassword} from '../utils/dataHelper';
 
 type Application = {
   id: string;
@@ -21,11 +25,11 @@ type ApplicationState = {
 
 export const useApplicationStore = create<ApplicationState>((set) => ({
   applications: [],
-  setApplications: (applications) => set({ applications }),
+  setApplications: (applications) => set({applications}),
   fetchApplications: async () => {
     try {
       const applications = await applicationApi.getAll();
-      console.log("ApplicationData", applications);
+      console.log('ApplicationData', applications);
       set((state) => ({
         applications,
       }));
@@ -51,6 +55,35 @@ export const useApplicationStore = create<ApplicationState>((set) => ({
         id,
         status
       );
+      if (status === ApplicationStatus.APPROVED) {
+        const application = await applicationApi.getApplicationById(id);
+        const password = generateRandomPassword();
+        const mentor = await firebaseInstance.createAccount(
+          application.mentorProfile.email,
+          password
+        );
+        await firebaseInstance.addUser(mentor.uid, {
+          id: application.mentorProfile.id,
+          role: 'mentor',
+        });
+        const subject = 'Đơn đăng kí được chấp nhận';
+        const content =
+          'Đơn đăng kí của bạn đã được chấp nhận. Hãy đăng nhập để xem chi tiết<br>' +
+          '<br>' +
+          'Đây là thông tin tài khoản của bạn:<br>' +
+          '<br>' +
+          'Email: ' +
+          application.mentorProfile.email +
+          '<br>' +
+          'Password: ' +
+          password +
+          '<br>';
+        sendMail(updatedApplication.mentorProfile.email, subject, content);
+      } else if (status === ApplicationStatus.REJECTED) {
+        const subject = 'Đơn đăng kí bị từ chối';
+        const content = 'Đơn đăng kí của bạn đã bị từ chối. ';
+        sendMail(updatedApplication.mentorProfile.email, subject, content);
+      }
       set((state) => ({
         applications: state.applications.map((app) =>
           app.id === id ? updatedApplication : app

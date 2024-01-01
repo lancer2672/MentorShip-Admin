@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import {
+  Avatar,
   Breadcrumb,
   Button,
   Checkbox,
@@ -7,11 +8,11 @@ import {
   Modal,
   Table,
   TextInput,
-} from "flowbite-react";
-import Datepicker from "tailwind-datepicker-react";
-import Select from "react-select";
-import type { FC } from "react";
-import { useState, useEffect } from "react";
+} from 'flowbite-react';
+import Datepicker from 'tailwind-datepicker-react';
+import Select from 'react-select';
+import type {FC} from 'react';
+import {useState, useEffect} from 'react';
 import {
   HiChevronLeft,
   HiChevronRight,
@@ -21,34 +22,36 @@ import {
   HiOutlineEye,
   HiTrash,
   HiX,
-} from "react-icons/hi";
-import { FaCopy } from "react-icons/fa";
-import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { format } from "date-fns";
-import { useApplicationStore } from "../../store/application";
-import { useUserStore } from "../../store/user";
-import { ApplicationStatus } from "../../constants";
-import { applicationToExcelData } from "../../utils/excelDataHelper";
-import { exportExcel } from "../../utils/excelHelper";
-import { handleCopyClick, shortenId } from "../../utils/dataHelper";
+} from 'react-icons/hi';
+import {FaCopy} from 'react-icons/fa';
+import NavbarSidebarLayout from '../../layouts/navbar-sidebar';
+import {format} from 'date-fns';
+import {useApplicationStore} from '../../store/application';
+import {useUserStore} from '../../store/user';
+import {ApplicationStatus} from '../../constants';
+import {applicationToExcelData} from '../../utils/excelDataHelper';
+import {exportExcel} from '../../utils/excelHelper';
+import {handleCopyClick, shortenId} from '../../utils/dataHelper';
+import sendMail from '../../service/sendMail';
+import firebaseInstance from '../../service/firebaseService';
 // import { Datepicker } from "../../components/datepicker";
 
 const dropdownOption = [
-  { value: "id", label: "Id" },
-  { value: "displayName", label: "Tên ứng viên" },
+  {value: 'id', label: 'Id'},
+  {value: 'displayName', label: 'Tên ứng viên'},
 ];
 
 const ApplicationListPage: FC = function () {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
   const [applicationList, setApplicationList] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState(dropdownOption[1]);
 
   const [show, setShow] = useState(false);
-  const { applications, setApplications, fetchApplications } =
+  const {applications, setApplications, fetchApplications} =
     useApplicationStore();
-  const { user, getUserById } = useUserStore();
+  const {user, getUserById} = useUserStore();
 
   const handleClose = (state: boolean) => {
     setShow(state);
@@ -69,8 +72,9 @@ const ApplicationListPage: FC = function () {
   useEffect(() => {
     const applicationsWithUser = applications.map((application) => {
       // const user = await getUserById(application.mentorId);
-      return { ...user, ...application };
+      return {...user, ...application};
     });
+    console.log('applicationWIghtUser', applicationsWithUser);
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
         const results = applicationsWithUser.filter((application) =>
@@ -78,7 +82,7 @@ const ApplicationListPage: FC = function () {
             .toLowerCase()
             .includes(searchTerm.toLowerCase())
         );
-        console.log("applicationList", results, applicationList, searchTerm);
+        console.log('applicationList', results, applicationList, searchTerm);
         setApplicationList(results);
       } else {
         setApplicationList(applicationsWithUser);
@@ -89,15 +93,15 @@ const ApplicationListPage: FC = function () {
   useEffect(() => {
     const applicationsWithUser = applications.map((application) => {
       // const user = await getUserById(application.mentorId);
-      return { ...user, ...application };
+      return {...user, ...application};
     });
     setApplicationList(applicationsWithUser);
-    console.log("applicationWIghtUser", applicationsWithUser);
+    console.log('applicationWIghtUser', applicationsWithUser);
   }, [applications]);
-  console.log("applications", applications);
+  console.log('applications', applications);
   const handleChange = (date) => {
     setSelectedDate(date);
-    console.log(("seletedDate", date.getTime()));
+    console.log(('seletedDate', date.getTime()));
     const filtered = data.filter((application) => {
       const month = application.submitDate.getMonth();
       const year = application.submitDate.getFullYear();
@@ -105,53 +109,53 @@ const ApplicationListPage: FC = function () {
 
       const submitDate = new Date(year, month, d).getTime();
 
-      console.log("submitDate", submitDate, date.getTime());
+      console.log('submitDate', submitDate, date.getTime());
       return submitDate === date.getTime();
     });
     setApplications(filtered);
   };
 
   const options = {
-    title: "Select date",
+    title: 'Select date',
     autoHide: true,
     todayBtn: false,
     clearBtn: true,
-    clearBtnText: "Clear",
-    maxDate: new Date("2030-01-01"),
-    minDate: new Date("1950-01-01"),
+    clearBtnText: 'Clear',
+    maxDate: new Date('2030-01-01'),
+    minDate: new Date('1950-01-01'),
     theme: {
-      background: "bg-gray-700 dark:bg-gray-800",
-      todayBtn: "",
-      clearBtn: "",
-      icons: "",
-      text: "",
+      background: 'bg-gray-700 dark:bg-gray-800',
+      todayBtn: '',
+      clearBtn: '',
+      icons: '',
+      text: '',
 
-      input: "",
-      inputIcon: "",
-      selected: "",
+      input: '',
+      inputIcon: '',
+      selected: '',
     },
     icons: {
       // () => ReactElement | JSX.Element
     },
-    datepickerClassNames: "top-12",
+    datepickerClassNames: 'top-12',
     defaultDate: new Date(),
-    language: "en",
+    language: 'en',
     disabledDates: [],
-    weekDays: ["Mo", "Tu", "We", "Th", "Fr", "Sa", "Su"],
-    inputNameProp: "date",
-    inputIdProp: "date",
-    inputPlaceholderProp: "Select Date",
+    weekDays: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+    inputNameProp: 'date',
+    inputIdProp: 'date',
+    inputPlaceholderProp: 'Select Date',
     inputDateFormatProp: {
-      day: "numeric",
-      month: "long",
-      year: "numeric",
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
     },
   };
 
   const handleExportFileExcel = () => {
     const jsonData = applicationList.map((a) => applicationToExcelData(a));
-    console.log("jsonData", jsonData);
-    exportExcel(jsonData, "application_list");
+    console.log('jsonData', jsonData);
+    exportExcel(jsonData, 'application_list');
   };
   return (
     <NavbarSidebarLayout isFooter={false}>
@@ -190,22 +194,22 @@ const ApplicationListPage: FC = function () {
                   />
                 </div>
               </form>
-              <div style={{ marginRight: 8, minWidth: 200 }}>
+              <div style={{marginRight: 8, minWidth: 200}}>
                 <Select
                   styles={{
                     control: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "white",
-                      backgroundColor: "#374151",
+                      color: 'white',
+                      backgroundColor: '#374151',
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "white",
-                      backgroundColor: "#374151",
+                      color: 'white',
+                      backgroundColor: '#374151',
                     }),
                     option: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "#374151",
+                      color: '#374151',
                     }),
                   }}
                   defaultValue={selectedOption}
@@ -250,14 +254,14 @@ const ApplicationListPage: FC = function () {
 
 const styles = {
   text: {
-    color: "white",
+    color: 'black',
   },
 };
 
-const ViewApplicationDetail: FC = function ({ application }) {
+const ViewApplicationDetail: FC = function ({application}) {
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
-  const { applications, updateApplicationStatus } = useApplicationStore();
+  const {applications, updateApplicationStatus} = useApplicationStore();
   const onImageClick = () => {
     setShow(true);
   };
@@ -271,23 +275,24 @@ const ViewApplicationDetail: FC = function ({ application }) {
   const handleAcceptApplication = async () => {
     try {
       await updateApplicationStatus(application.id, ApplicationStatus.APPROVED);
+
       setOpen(false);
     } catch (er) {
-      console.error("update application er", er);
+      console.error('update application er', er);
     }
   };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const modal = document.getElementById("modal");
+      const modal = document.getElementById('modal');
       if (modal && !modal.contains(event.target as Node)) {
         closeModal();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -299,21 +304,22 @@ const ViewApplicationDetail: FC = function ({ application }) {
           Xem
         </div>
       </Button>
-      <Modal style={{}} onClose={() => setOpen(false)} show={isOpen}>
+      <Modal onClose={() => setOpen(false)} show={isOpen}>
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
           <strong>Thông tin ứng viên</strong>
         </Modal.Header>
         <Modal.Body>
           <div
             style={{
-              display: "flex",
+              display: 'flex',
 
-              flexDirection: "row",
+              flexDirection: 'row',
             }}
           >
             <img
-              style={{ marginRight: 20 }}
-              src="https://picsum.photos/300/200"
+              style={{marginRight: 20}}
+              src={application.mentorProfile.avatar}
+              alt="avatar"
               width={200}
               height={160}
             ></img>
@@ -321,79 +327,100 @@ const ViewApplicationDetail: FC = function ({ application }) {
               <div>
                 <Label htmlFor="firstName">Họ và tên</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>{application.displayName}</p>
+                  <p style={styles.text}>
+                    {application.mentorProfile.firstName}{' '}
+                    {application.mentorProfile.lastName}
+                  </p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="lastName">Ngày sinh</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>27-10-2002</p>
+                  <p style={styles.text}>
+                    {format(
+                      new Date(application.mentorProfile.dateOfBirth),
+                      'dd-MM-yyyy'
+                    )}
+                  </p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="email">Số điện thoại</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>{application.phoneNumber}</p>
+                  <p style={styles.text}>
+                    {application.mentorProfile.phoneNumber}
+                  </p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="email">Email</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>JBkhanhtran@gmail.com</p>
+                  <p style={styles.text}>{application.mentorProfile.email}</p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="phone">Nghề nghiệp</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>Mobile Developer</p>
+                  <p style={styles.text}>
+                    {application.mentorProfile.jobTitle}
+                  </p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="company">Company</Label>
-                <div className="mt-1"></div>
+                <Label htmlFor="company">Kĩ năng</Label>
+                <div className="mt-1">
+                  {/* <p style={styles.text}>
+                    {application.mentorProfile.skillIds.map((skill) => {
+                      return <div>{skill}</div>;
+                    })}
+                  </p> */}
+                </div>
               </div>
             </div>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <Label htmlFor="department">Kinh nghiệm làm việc</Label>
-            <div className="mt-1">
-              <p style={styles.text}>
-                Lorem ipsum dolor sit amet. Qui perspiciatis dolorem ut
-                asperiores laborum non reprehenderit voluptatem ut amet nostrum.
-                Hic fugiat sequi non mollitia rerum sit eaque illo ex voluptate
-                mollitia ut dignissimos assumenda. Eum autem cumque in voluptas
-                delectus vel dolores provident 33 quos aliquid?
-              </p>
+          <div
+            style={{
+              marginTop: '12px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1.5rem',
+            }}
+          >
+            <div>
+              <Label htmlFor="department">Thành tựu</Label>
+              <div className="mt-1">
+                <p style={styles.text}>{application.achievement}</p>
+              </div>
             </div>
-            <Label style={{ marginTop: 12 }} htmlFor="department">
-              Chứng chỉ
-            </Label>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-              {application.imageUrls.map((url) => {
-                return (
-                  <div
-                    style={{ alignItems: "center", justifyContent: "center" }}
-                  >
-                    <img
-                      onClick={onImageClick}
-                      src={url}
-                      style={{
-                        objectFit: "cover",
-                        backgroundColor: "tomato",
-                        margin: 0,
-                      }}
-                      width={180}
-                      height={40}
-                    ></img>
-                  </div>
-                );
-              })}
+            <div>
+              <Label htmlFor="department">Lý do đăng kí</Label>
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
+                {application.mentorProfile.imageUrls.map((url) => {
+                  return (
+                    <div
+                      style={{alignItems: 'center', justifyContent: 'center'}}
+                    >
+                      <img
+                        onClick={onImageClick}
+                        src={url}
+                        style={{
+                          objectFit: 'cover',
+                          backgroundColor: 'tomato',
+                          margin: 0,
+                        }}
+                        width={180}
+                        height={40}
+                      ></img>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            style={{ alignSelf: "flex-end", marginLeft: "auto" }}
+            style={{alignSelf: 'flex-end', marginLeft: 'auto'}}
             color="primary"
             onClick={handleAcceptApplication}
           >
@@ -414,13 +441,13 @@ const ViewApplicationDetail: FC = function ({ application }) {
         <Modal.Body>
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <img
-              style={{ marginRight: 20 }}
+              style={{marginRight: 20}}
               src="https://picsum.photos/200/300"
               width={200}
               height={160}
@@ -432,16 +459,42 @@ const ViewApplicationDetail: FC = function ({ application }) {
   );
 };
 
-const AllApplications: FC = function ({ applications }) {
+const AllApplications: FC = function ({applications}) {
   const [checkedItems, setCheckedItems] = useState({});
-  console.log("Allapplication", applications);
+  console.log('Allapplication', applications);
   const handleChange = (event) => {
     setCheckedItems({
       ...checkedItems,
       [event.target.name]: event.target.checked,
     });
   };
-  console.log("checkbox", checkedItems);
+  console.log('checkbox', checkedItems);
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case ApplicationStatus.PENDING:
+        return 'bg-yellow-500'; // Hoặc màu khác tùy thuộc vào yêu cầu của bạn
+      case ApplicationStatus.APPROVED:
+        return 'bg-green-400';
+      case ApplicationStatus.REJECTED:
+        return 'bg-red-500';
+      default:
+        return '';
+    }
+  };
+
+  const getStatusText = (status) => {
+    switch (status) {
+      case ApplicationStatus.PENDING:
+        return 'Đang chờ duyệt';
+      case ApplicationStatus.APPROVED:
+        return 'Đã duyệt';
+      case ApplicationStatus.REJECTED:
+        return 'Bị từ chối';
+      default:
+        return '';
+    }
+  };
 
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
@@ -491,27 +544,35 @@ const AllApplications: FC = function ({ applications }) {
               </div>
             </Table.Cell>
             <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
-              <img
-                className="h-10 w-10 rounded-full"
-                src={application.avatar}
-                alt={`${application.name} avatar`}
-              />
+              <div>
+                <Avatar
+                  // className="h-10!important w-10 rounded-full"
+                  img={application.mentorProfile.avatar}
+                  alt={`${application.name} avatar`}
+                  // rounded
+                />
+              </div>
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                  {application.name}
+                  {application.mentorProfile.firstName}{' '}
+                  {application.mentorProfile.lastName}
                 </div>
                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  {application.email}
+                  {application.mentorProfile.email}
                 </div>
               </div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {format(new Date(application.createdAt), "dd-MM-yyyy")}
+              {format(new Date(application.applicationDate), 'dd-MM-yyyy')}
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
               <div className="flex items-center">
-                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
-                {application.status}
+                <div
+                  className={`mr-2 h-2.5 w-2.5 rounded-full ${getStatusColor(
+                    application.status
+                  )}`}
+                ></div>
+                {getStatusText(application.status)}
               </div>
             </Table.Cell>
 
@@ -528,16 +589,16 @@ const AllApplications: FC = function ({ applications }) {
   );
 };
 
-const DeleteUserModal: FC = function ({ application }) {
+const DeleteUserModal: FC = function ({application}) {
   const [isOpen, setOpen] = useState(false);
-  const { applications, updateApplicationStatus } = useApplicationStore();
+  const {applications, updateApplicationStatus} = useApplicationStore();
 
   const handleRejectApplication = async () => {
     try {
       await updateApplicationStatus(application.id, ApplicationStatus.REJECTED);
       setOpen(false);
     } catch (er) {
-      console.error("update application er", er);
+      console.error('update application er', er);
     }
   };
   return (
