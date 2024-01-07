@@ -112,18 +112,29 @@ const ApplicationListPage: FC = function () {
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
-        const results = applications.filter((application) =>
-          application[selectedOption.value]
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        );
+        let results = [];
+        if (selectedOption.value === 'id') {
+          results = applications.filter((application) =>
+            application.id.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        } else if (selectedOption.value === 'displayName') {
+          results = applications.filter(
+            (application) =>
+              application.mentorProfile.firstName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              application.mentorProfile.lastName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+          );
+        }
         setApplicationList(results);
       } else {
         setApplicationList(applications);
       }
     }, 1200);
     return () => clearTimeout(delayDebounceFn);
-  }, [searchTerm, applications]);
+  }, [searchTerm, applications, selectedOption]);
   useEffect(() => {
     setApplicationList(applications);
   }, [applications]);
@@ -228,13 +239,11 @@ const ApplicationListPage: FC = function () {
                   styles={{
                     control: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: 'white',
-                      backgroundColor: '#374151',
+                      color: '#374151',
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: 'white',
-                      backgroundColor: '#374151',
+                      color: '#374151',
                     }),
                     option: (baseStyles, state) => ({
                       ...baseStyles,
@@ -244,14 +253,6 @@ const ApplicationListPage: FC = function () {
                   defaultValue={selectedOption}
                   onChange={setSelectedOption}
                   options={dropdownOption}
-                />
-              </div>
-              <div className="mt-3 flex space-x-1 pl-0 sm:mt-0 sm:pl-2">
-                <Datepicker
-                  options={options}
-                  onChange={handleChange}
-                  show={show}
-                  setShow={handleClose}
                 />
               </div>
             </div>
@@ -395,10 +396,6 @@ const ViewApplicationDetail: FC = function ({
                   <p style={styles.text}>{profileInfor.jobTitle}</p>
                 </div>
               </div>
-              <div>
-                <Label htmlFor="company">Company</Label>
-                <div className="mt-1">{profileInfor.company}</div>
-              </div>
             </div>
           </div>
           <div
@@ -524,12 +521,12 @@ const AllApplications: FC = function ({applications}) {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>
+        {/* <Table.HeadCell>
           <Label htmlFor="select-all" className="sr-only">
             Select all
           </Label>
           <Checkbox id="select-all" name="select-all" />
-        </Table.HeadCell>
+        </Table.HeadCell> */}
         <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên</Table.HeadCell>
         <Table.HeadCell>Ngày gửi</Table.HeadCell>
@@ -615,7 +612,7 @@ const AllApplications: FC = function ({applications}) {
   );
 };
 
-const DeleteUserModal: FC = function ({application}) {
+const RejectButton: FC = function ({application}) {
   const [isOpen, setOpen] = useState(false);
   const {applications, updateApplicationStatus} = useApplicationStore();
 

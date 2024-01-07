@@ -7,11 +7,11 @@ import {
   Modal,
   Table,
   TextInput,
-} from "flowbite-react";
-import Datepicker from "tailwind-datepicker-react";
-import Select from "react-select";
-import type { FC } from "react";
-import { useState, useEffect } from "react";
+} from 'flowbite-react';
+import Datepicker from 'tailwind-datepicker-react';
+import Select from 'react-select';
+import type {FC} from 'react';
+import {useState, useEffect} from 'react';
 import {
   HiChevronLeft,
   HiChevronRight,
@@ -21,31 +21,31 @@ import {
   HiOutlineEye,
   HiTrash,
   HiX,
-} from "react-icons/hi";
-import NavbarSidebarLayout from "../../layouts/navbar-sidebar";
-import { format } from "date-fns";
-import { useMentorStore } from "../../store/mentor";
-import { useUserStore } from "../../store/user";
-import { exportExcel } from "../../utils/excelHelper";
-import { handleCopyClick, shortenId } from "../../utils/dataHelper";
-import { FaCopy } from "react-icons/fa";
-import { Pagination } from "../application/list";
+} from 'react-icons/hi';
+import NavbarSidebarLayout from '../../layouts/navbar-sidebar';
+import {format} from 'date-fns';
+import {useMentorStore} from '../../store/mentor';
+import {useUserStore} from '../../store/user';
+import {exportExcel} from '../../utils/excelHelper';
+import {handleCopyClick, shortenId} from '../../utils/dataHelper';
+import {FaCopy} from 'react-icons/fa';
+import {Pagination} from '../application/list';
 // import { Datepicker } from "../../components/datepicker";
 
 const dropdownOption = [
-  { value: "id", label: "Id" },
-  { value: "name", label: "Tên mentor" },
+  {value: 'id', label: 'Id'},
+  {value: 'name', label: 'Tên mentor'},
 ];
 
 const MentorListPage: FC = function () {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const [mentorList, setMentorList] = useState([]);
 
   const [selectedOption, setSelectedOption] = useState(dropdownOption[1]);
 
   const [show, setShow] = useState(false);
-  const { mentors, setMentors, fetchMentors } = useMentorStore();
-  const { user, getUserById } = useUserStore();
+  const {mentors, setMentors, fetchMentors} = useMentorStore();
+  const {user, getUserById} = useUserStore();
 
   const handleClose = (state: boolean) => {
     setShow(state);
@@ -69,16 +69,25 @@ const MentorListPage: FC = function () {
     }
     const mentorsWithUser = mentors.map((mentor) => {
       // const user = await getUserById(mentor.mentorId);
-      return { ...user, ...mentor };
+      return {...user, ...mentor};
     });
     const delayDebounceFn = setTimeout(() => {
       if (searchTerm) {
-        const results = mentorsWithUser.filter((mentor) =>
-          mentor[selectedOption.value]
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase())
-        );
-        console.log("mentorList", results, mentorList, searchTerm);
+        let results = [];
+        if (selectedOption.value === 'id') {
+          results = mentorsWithUser.filter((mentor) =>
+            mentor.id.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        } else if (selectedOption.value === 'name') {
+          results = mentorsWithUser.filter(
+            (mentor) =>
+              mentor.firstName
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase()) ||
+              mentor.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+          );
+        }
+        console.log('mentorList', results, mentorList, searchTerm);
         setMentorList(results);
       } else {
         setMentorList(mentorsWithUser);
@@ -96,10 +105,10 @@ const MentorListPage: FC = function () {
         };
       });
       setMentorList(mentorsWithUser);
-      console.log("mentorWIghtUser", mentorsWithUser);
+      console.log('mentorWIghtUser', mentorsWithUser);
     }
   }, [mentors]);
-  console.log("mentors", mentors);
+  console.log('mentors', mentors);
 
   const handleExportFileExcel = () => {
     // const jsonData = mentorList.map((a) => mentorToExcelData(a));
@@ -141,22 +150,20 @@ const MentorListPage: FC = function () {
                   />
                 </div>
               </form>
-              <div style={{ marginRight: 8, minWidth: 200 }}>
+              <div style={{marginRight: 8, minWidth: 200}}>
                 <Select
                   styles={{
                     control: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "white",
-                      backgroundColor: "#374151",
+                      color: '#374151',
                     }),
                     singleValue: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "white",
-                      backgroundColor: "#374151",
+                      color: '#374151',
                     }),
                     option: (baseStyles, state) => ({
                       ...baseStyles,
-                      color: "#374151",
+                      color: '#374151',
                     }),
                   }}
                   defaultValue={selectedOption}
@@ -193,14 +200,14 @@ const MentorListPage: FC = function () {
 
 const styles = {
   text: {
-    color: "white",
+    color: 'black',
   },
 };
 
-const ViewMentorDetail: FC = function ({ mentor }) {
+const ViewMentorDetail: FC = function ({mentor}) {
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
-  const { mentors } = useMentorStore();
+  const {mentors} = useMentorStore();
   const onImageClick = () => {
     setShow(true);
   };
@@ -215,21 +222,21 @@ const ViewMentorDetail: FC = function ({ mentor }) {
     try {
       setOpen(false);
     } catch (er) {
-      console.error("update mentor er", er);
+      console.error('update mentor er', er);
     }
   };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const modal = document.getElementById("modal");
+      const modal = document.getElementById('modal');
       if (modal && !modal.contains(event.target as Node)) {
         closeModal();
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
 
@@ -248,14 +255,14 @@ const ViewMentorDetail: FC = function ({ mentor }) {
         <Modal.Body>
           <div
             style={{
-              display: "flex",
+              display: 'flex',
 
-              flexDirection: "row",
+              flexDirection: 'row',
             }}
           >
             <img
-              style={{ marginRight: 20 }}
-              src="https://picsum.photos/300/200"
+              style={{marginRight: 20}}
+              src={mentor.avatar}
               width={200}
               height={160}
             ></img>
@@ -263,13 +270,15 @@ const ViewMentorDetail: FC = function ({ mentor }) {
               <div>
                 <Label htmlFor="firstName">Họ và tên</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>{mentor.name}</p>
+                  <p style={styles.text}>
+                    {mentor.firstName} {mentor.lastName}
+                  </p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="lastName">Ngày sinh</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>27-10-2002</p>
+                  <p style={styles.text}>{mentor.dateOfBirth}</p>
                 </div>
               </div>
               <div>
@@ -281,45 +290,43 @@ const ViewMentorDetail: FC = function ({ mentor }) {
               <div>
                 <Label htmlFor="email">Email</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>JBkhanhtran@gmail.com</p>
+                  <p style={styles.text}>{mentor.email}</p>
                 </div>
               </div>
               <div>
                 <Label htmlFor="phone">Nghề nghiệp</Label>
                 <div className="mt-1">
-                  <p style={styles.text}>Mobile Developer</p>
+                  <p style={styles.text}>{mentor.jobTitle}</p>
                 </div>
               </div>
-              <div>
+              {/* <div>
                 <Label htmlFor="company">Company</Label>
                 <div className="mt-1"></div>
-              </div>
+              </div> */}
             </div>
           </div>
-          <div style={{ marginTop: 12 }}>
-            <Label htmlFor="department">Kinh nghiệm làm việc</Label>
+          <div style={{marginTop: 12}}>
+            <Label htmlFor="department">Giới thiệu</Label>
             <div className="mt-1">
               <p style={styles.text}>
-                Lorem ipsum dolor sit amet. Qui perspiciatis dolorem ut
-                asperiores laborum non reprehenderit voluptatem ut amet nostrum.
-                Hic fugiat sequi non mollitia rerum sit eaque illo ex voluptate
-                mollitia ut dignissimos assumenda. Eum autem cumque in voluptas
-                delectus vel dolores provident 33 quos aliquid?
+                {mentor.introduction ? mentor.introduction : 'Không có'}
               </p>
             </div>
-            <Label style={{ marginTop: 12 }} htmlFor="department">
+            {/* <Label style={{marginTop: 12}} htmlFor="department">
               Chứng chỉ
             </Label>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-4"></div>
+            <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
+
+            </div> */}
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button
-            style={{ alignSelf: "flex-end", marginLeft: "auto" }}
+            style={{alignSelf: 'flex-end', marginLeft: 'auto'}}
             color="primary"
-            onClick={handleAcceptMentor}
+            onClick={() => setOpen(false)}
           >
-            Chấp thuận
+            ĐÓng
           </Button>
         </Modal.Footer>
       </Modal>
@@ -336,13 +343,13 @@ const ViewMentorDetail: FC = function ({ mentor }) {
         <Modal.Body>
           <div
             style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
             }}
           >
             <img
-              style={{ marginRight: 20 }}
+              style={{marginRight: 20}}
               src="https://picsum.photos/200/300"
               width={200}
               height={160}
@@ -354,31 +361,24 @@ const ViewMentorDetail: FC = function ({ mentor }) {
   );
 };
 
-const AllMentors: FC = function ({ mentors }) {
+const AllMentors: FC = function ({mentors}) {
   const [checkedItems, setCheckedItems] = useState({});
-  console.log("Allmentor", mentors);
+  console.log('Allmentor', mentors);
   const handleChange = (event) => {
     setCheckedItems({
       ...checkedItems,
       [event.target.name]: event.target.checked,
     });
   };
-  console.log("checkbox", checkedItems);
+  console.log('checkbox', checkedItems);
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>
-          <Label htmlFor="select-all" className="sr-only">
-            Select all
-          </Label>
-          <Checkbox id="select-all" name="select-all" />
-        </Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên mentor</Table.HeadCell>
-        <Table.HeadCell>Email</Table.HeadCell>
-        <Table.HeadCell>Nghề nghiệp</Table.HeadCell>
-        <Table.HeadCell>Số khoá học</Table.HeadCell>
+        <Table.HeadCell style={{maxWidth: '150px'}}>Nghề nghiệp</Table.HeadCell>
         <Table.HeadCell>Ngày tạo</Table.HeadCell>
+        {/* <Table.HeadCell>Số khoá học</Table.HeadCell> */}
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
@@ -388,20 +388,6 @@ const AllMentors: FC = function ({ mentors }) {
             key={index}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <Table.Cell className="w-4 p-4">
-              <div className="flex items-center">
-                <Checkbox
-                  checked={checkedItems[`checkbox-${index}`] || false} // Sử dụng trạng thái từ state
-                  onChange={handleChange} // Thêm hàm xử lý sự kiện thay đổi
-                  aria-describedby={`checkbox-${index}`}
-                  id={`checkbox-${index}`}
-                  name={`checkbox-${index}`} // Thêm thuộc tính name để xác định checkbox cụ thể nào đang được thay đổi
-                />
-                <label htmlFor={`checkbox-${index}`} className="sr-only">
-                  checkbox
-                </label>
-              </div>
-            </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               <div className="flex items-center">
                 {shortenId(mentor.id)}
@@ -421,21 +407,25 @@ const AllMentors: FC = function ({ mentors }) {
               />
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                 <div className="text-base font-semibold text-gray-900 dark:text-white">
-                  {mentor.name}
+                  {mentor.firstName} {mentor.lastName}
                 </div>
                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   {mentor.email}
                 </div>
               </div>
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {format(new Date(mentor.createdAt), "dd-MM-yyyy")}
+            <Table.Cell
+              className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white"
+              style={{
+                maxWidth: '150px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {mentor.jobTitle}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
-              <div className="flex items-center">
-                <div className="mr-2 h-2.5 w-2.5 rounded-full bg-green-400"></div>{" "}
-                {mentor.status}
-              </div>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {format(new Date(mentor.createdAt), 'dd-MM-yyyy')}
             </Table.Cell>
 
             <Table.Cell>

@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import classNames from "classnames";
-import { Dropdown, Sidebar, TextInput, Tooltip } from "flowbite-react";
-import type { FC } from "react";
-import { useEffect, useState } from "react";
+import classNames from 'classnames';
+import {Dropdown, Sidebar, TextInput, Tooltip} from 'flowbite-react';
+import type {FC} from 'react';
+import {useEffect, useState} from 'react';
 import {
   HiAdjustments,
   HiBookOpen,
@@ -12,16 +12,16 @@ import {
   HiOutlineCreditCard,
   HiOutlineShoppingBag,
   HiSearch,
-} from "react-icons/hi";
+} from 'react-icons/hi';
 
-import { useSidebarContext } from "../context/SidebarContext";
-import isSmallScreen from "../helpers/is-small-screen";
+import {useSidebarContext} from '../context/SidebarContext';
+import isSmallScreen from '../helpers/is-small-screen';
 
 const ExampleSidebar: FC = function () {
-  const { isOpenOnSmallScreens: isSidebarOpenOnSmallScreens } =
+  const {isOpenOnSmallScreens: isSidebarOpenOnSmallScreens} =
     useSidebarContext();
 
-  const [currentPage, setCurrentPage] = useState("");
+  const [currentPage, setCurrentPage] = useState('');
   const [isEcommerceOpen, setEcommerceOpen] = useState(true);
   const [isUsersOpen, setUsersOpen] = useState(true);
 
@@ -29,13 +29,13 @@ const ExampleSidebar: FC = function () {
     const newPage = window.location.pathname;
 
     setCurrentPage(newPage);
-    setEcommerceOpen(newPage.includes("/e-commerce/"));
-    setUsersOpen(newPage.includes("/users/"));
+    setEcommerceOpen(newPage.includes('/e-commerce/'));
+    setUsersOpen(newPage.includes('/users/'));
   }, [setCurrentPage, setEcommerceOpen, setUsersOpen]);
 
   return (
     <div
-      className={classNames("lg:!block", {
+      className={classNames('lg:!block', {
         hidden: !isSidebarOpenOnSmallScreens,
       })}
     >
@@ -60,7 +60,7 @@ const ExampleSidebar: FC = function () {
                   href="/"
                   icon={HiChartPie}
                   className={
-                    "/" === currentPage ? "bg-gray-100 dark:bg-gray-700" : ""
+                    '/' === currentPage ? 'bg-gray-100 dark:bg-gray-700' : ''
                   }
                 >
                   Bảng điều khiển
@@ -68,27 +68,26 @@ const ExampleSidebar: FC = function () {
                 <Sidebar.Item
                   href="/application"
                   icon={HiDocument}
-                  label={12}
                   className={
-                    "/application" === currentPage
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
+                    '/application' === currentPage
+                      ? 'bg-gray-100 dark:bg-gray-700'
+                      : ''
                   }
                 >
                   Đơn ứng tuyển
                 </Sidebar.Item>
 
-                <Sidebar.Item
+                {/* <Sidebar.Item
                   href="/course"
                   icon={HiBookOpen}
                   className={
-                    "/course" === currentPage
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
+                    '/course' === currentPage
+                      ? 'bg-gray-100 dark:bg-gray-700'
+                      : ''
                   }
                 >
                   Danh sách khoá học
-                </Sidebar.Item>
+                </Sidebar.Item> */}
 
                 <Sidebar.Collapse
                   icon={HiOutlineAdjustments}
@@ -98,9 +97,9 @@ const ExampleSidebar: FC = function () {
                   <Sidebar.Item
                     href="/management/mentor"
                     className={
-                      "/management/mentor" === currentPage
-                        ? "bg-gray-100 dark:bg-gray-700"
-                        : ""
+                      '/management/mentor' === currentPage
+                        ? 'bg-gray-100 dark:bg-gray-700'
+                        : ''
                     }
                   >
                     Mentor
@@ -108,9 +107,9 @@ const ExampleSidebar: FC = function () {
                   <Sidebar.Item
                     href="/management/mentee"
                     className={
-                      "/management/mentee" === currentPage
-                        ? "bg-gray-100 dark:bg-gray-700"
-                        : ""
+                      '/management/mentee' === currentPage
+                        ? 'bg-gray-100 dark:bg-gray-700'
+                        : ''
                     }
                   >
                     Học viên
@@ -118,36 +117,36 @@ const ExampleSidebar: FC = function () {
                   <Sidebar.Item
                     href="/management/skill"
                     className={
-                      "/management/skill" === currentPage
-                        ? "bg-gray-100 dark:bg-gray-700"
-                        : ""
+                      '/management/skill' === currentPage
+                        ? 'bg-gray-100 dark:bg-gray-700'
+                        : ''
                     }
                   >
                     Kĩ năng
                   </Sidebar.Item>
                 </Sidebar.Collapse>
-                <Sidebar.Item
+                {/* <Sidebar.Item
                   href="/transaction"
                   icon={HiOutlineCreditCard}
                   className={
-                    "/transaction" === currentPage
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
+                    '/transaction' === currentPage
+                      ? 'bg-gray-100 dark:bg-gray-700'
+                      : ''
                   }
                 >
                   Thông tin giao dịch
-                </Sidebar.Item>
-                <Sidebar.Item
+                </Sidebar.Item> */}
+                {/* <Sidebar.Item
                   href="/transaction"
                   icon={HiOutlineShoppingBag}
                   className={
-                    "/transaction" === currentPage
-                      ? "bg-gray-100 dark:bg-gray-700"
-                      : ""
+                    '/transaction' === currentPage
+                      ? 'bg-gray-100 dark:bg-gray-700'
+                      : ''
                   }
                 >
                   Tạo khuyến mãi
-                </Sidebar.Item>
+                </Sidebar.Item> */}
               </Sidebar.ItemGroup>
             </Sidebar.Items>
           </div>

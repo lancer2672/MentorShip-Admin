@@ -1,5 +1,5 @@
-import axiosClient from "../config/axios-client";
-import { Skill } from "../types";
+import axiosClient from '../config/axios-client';
+import {Skill} from '../types';
 
 const skillApi = {
   getById: async (id: string) => {
@@ -16,7 +16,7 @@ const skillApi = {
     try {
       const url = `/skill/getAllSkills`;
       const res = await axiosClient.get(url);
-      return res.data;
+      return res.data.data;
     } catch (error) {
       console.error(error);
       return null;
