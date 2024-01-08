@@ -1,5 +1,5 @@
-import axiosClient from "../config/axios-client";
-import { RoleType } from "../types";
+import axiosClient from '../config/axios-client';
+import {RoleType} from '../types';
 
 const memberApi = {
   getById: async (role: RoleType, id: string) => {
@@ -14,11 +14,11 @@ const memberApi = {
   },
   getAll: async (role: RoleType) => {
     try {
-      console.log("role", role);
+      console.log('role', role);
       const url = `/api/${role}/get`;
       const res = await axiosClient.get(url);
-      console.log("response", res);
-      return res.data.data;
+      console.log('response', res);
+      return res.data;
     } catch (error) {
       console.error(error);
       return null;

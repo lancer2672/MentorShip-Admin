@@ -581,7 +581,6 @@ const AllApplications: FC = function ({applications}) {
                 </div>
                 <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
                   {application.mentorProfile.email}
-                  {application.mentorProfile.email}
                 </div>
               </div>
             </Table.Cell>

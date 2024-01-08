@@ -63,11 +63,11 @@ const SkillListPage: FC = function () {
     fetchAndSetSkills();
   }, [fetchSkills, getUserById]);
 
-  useEffect(() => {
-    if (skills.length > 0) {
-      setSkillList(skills);
-    }
-  }, [skills]);
+  // useEffect(() => {
+  //   if (skills.length > 0) {
+  //     setSkillList(skills);
+  //   }
+  // }, [skills]);
 
   useEffect(() => {
     const skillsWithUser = skills.map((skill) => {
@@ -175,7 +175,7 @@ const SkillListPage: FC = function () {
         <div className="overflow-x-auto">
           <div className="inline-block min-w-full align-middle">
             <div className="overflow-hidden shadow">
-              {skillList.length > 0 && <AllSkills skills={skillList} />}
+              {skills.length > 0 && <AllSkills skills={skills} />}
             </div>
           </div>
         </div>

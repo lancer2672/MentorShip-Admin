@@ -12,6 +12,7 @@ import FlowbiteWrapper from './components/flowbite-wrapper';
 import ApplicationListPage from './pages/application/list';
 import TransactionListPage from './pages/transaction/list';
 import MentorListPage from './pages/mentor/list';
+import MenteeListPage from './pages/mentee/list';
 import CourseListPage from './pages/course/list';
 import SkillListPage from './pages/skill/list';
 import firebaseInstance from './service/firebaseService';
@@ -37,6 +38,7 @@ const App: FC = function () {
           <Route path="/application" element={<ApplicationListPage />} />
           <Route path="/course" element={<CourseListPage />} />
           <Route path="/management/mentor" element={<MentorListPage />} />
+          <Route path="/management/mentee" element={<MenteeListPage />} />
           <Route path="/management/skill" element={<SkillListPage />} />
 
           <Route path="/transaction" element={<TransactionListPage />} />

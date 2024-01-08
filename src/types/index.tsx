@@ -1,6 +1,6 @@
 export enum RoleType {
-  Mentor = "mentor",
-  Mentee = "mentee",
+  Mentor = 'mentor',
+  Mentee = 'mentee',
 }
 
 type ApprovalStatus = 0 | 1 | 2;
@@ -23,6 +23,16 @@ export type Mentor = {
   twitter: string;
   skillIds: string[];
   imageUrls: string[];
+};
+
+export type Mentee = {
+  id: string;
+  phoneNumber: string;
+  email: string;
+  avatar: string;
+  firstName: string;
+  lastName: string;
+  dateOfBirth: string;
 };
 
 export type Application = {
