@@ -21,6 +21,8 @@ import {
   HiOutlineEye,
   HiTrash,
   HiX,
+  HiLockOpen,
+  HiLockClosed,
 } from 'react-icons/hi';
 import NavbarSidebarLayout from '../../layouts/navbar-sidebar';
 import {format} from 'date-fns';
@@ -204,6 +206,110 @@ const styles = {
   },
 };
 
+const AllMentors: FC = function ({mentors}) {
+  const [checkedItems, setCheckedItems] = useState({});
+  console.log('Allmentor', mentors);
+  const handleChange = (event) => {
+    setCheckedItems({
+      ...checkedItems,
+      [event.target.name]: event.target.checked,
+    });
+  };
+
+  const getStatusColor = (isLocked) => {
+    if (isLocked) {
+      return 'bg-red-500';
+    }
+    return 'bg-green-500';
+  };
+
+  const getStatusText = (isLocked) => {
+    if (isLocked) {
+      return 'Đã khóa';
+    }
+    return 'Đang hoạt động';
+  };
+
+  console.log('checkbox', checkedItems);
+  return (
+    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
+      <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        <Table.HeadCell>Id</Table.HeadCell>
+        <Table.HeadCell>Tên mentor</Table.HeadCell>
+        <Table.HeadCell style={{maxWidth: '150px'}}>Nghề nghiệp</Table.HeadCell>
+        <Table.HeadCell>Ngày tạo</Table.HeadCell>
+        <Table.HeadCell>Tình trạng</Table.HeadCell>
+        <Table.HeadCell></Table.HeadCell>
+      </Table.Head>
+
+      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
+        {mentors.map((mentor, index) => (
+          <Table.Row
+            key={index}
+            className="hover:bg-gray-100 dark:hover:bg-gray-700"
+          >
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center">
+                {shortenId(mentor.id)}
+                <button
+                  onClick={() => handleCopyClick(mentor.id)}
+                  className="ml-2"
+                >
+                  <FaCopy className="text-xl" />
+                </button>
+              </div>
+            </Table.Cell>
+            <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
+              <img
+                className="h-10 w-10 rounded-full"
+                src={mentor.avatar}
+                alt={`${mentor.name} avatar`}
+              />
+              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                <div className="text-base font-semibold text-gray-900 dark:text-white">
+                  {mentor.firstName} {mentor.lastName}
+                </div>
+                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                  {mentor.email}
+                </div>
+              </div>
+            </Table.Cell>
+            <Table.Cell
+              className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white"
+              style={{
+                maxWidth: '150px',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              }}
+            >
+              {mentor.jobTitle}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              {format(new Date(mentor.createdAt), 'dd-MM-yyyy')}
+            </Table.Cell>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
+              <div className="flex items-center">
+                <div
+                  className={`mr-2 h-2.5 w-2.5 rounded-full ${getStatusColor(
+                    mentor.isLocked
+                  )}`}
+                ></div>
+                {getStatusText(mentor.isLocked)}
+              </div>
+            </Table.Cell>
+            <Table.Cell>
+              <div className="flex items-center gap-x-3 whitespace-nowrap">
+                <ViewMentorDetail mentor={mentor} />
+                <RejectButton mentor={mentor} />
+              </div>
+            </Table.Cell>
+          </Table.Row>
+        ))}
+      </Table.Body>
+    </Table>
+  );
+};
+
 const ViewMentorDetail: FC = function ({mentor}) {
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
@@ -361,196 +467,31 @@ const ViewMentorDetail: FC = function ({mentor}) {
   );
 };
 
-const AllMentors: FC = function ({mentors}) {
-  const [checkedItems, setCheckedItems] = useState({});
-  console.log('Allmentor', mentors);
-  const handleChange = (event) => {
-    setCheckedItems({
-      ...checkedItems,
-      [event.target.name]: event.target.checked,
-    });
+const RejectButton: FC = function ({mentor}) {
+  // const [isOpen, setOpen] = useState(false);
+  const {mentors, updateLockStatus} = useMentorStore();
+  // const {applications, updateApplicationStatus} = useApplicationStore();
+
+  const handleUpdateLockStatus = async () => {
+    try {
+      await updateLockStatus(mentor.id);
+      // setOpen(false);
+    } catch (er) {
+      console.error('update mentor er', er);
+    }
   };
-  console.log('checkbox', checkedItems);
-  return (
-    <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
-      <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        <Table.HeadCell>Id</Table.HeadCell>
-        <Table.HeadCell>Tên mentor</Table.HeadCell>
-        <Table.HeadCell style={{maxWidth: '150px'}}>Nghề nghiệp</Table.HeadCell>
-        <Table.HeadCell>Ngày tạo</Table.HeadCell>
-        {/* <Table.HeadCell>Số khoá học</Table.HeadCell> */}
-        <Table.HeadCell></Table.HeadCell>
-      </Table.Head>
 
-      <Table.Body className="divide-y divide-gray-200 bg-white dark:divide-gray-700 dark:bg-gray-800">
-        {mentors.map((mentor, index) => (
-          <Table.Row
-            key={index}
-            className="hover:bg-gray-100 dark:hover:bg-gray-700"
-          >
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              <div className="flex items-center">
-                {shortenId(mentor.id)}
-                <button
-                  onClick={() => handleCopyClick(mentor.id)}
-                  className="ml-2"
-                >
-                  <FaCopy className="text-xl" />
-                </button>
-              </div>
-            </Table.Cell>
-            <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
-              <img
-                className="h-10 w-10 rounded-full"
-                src={mentor.avatar}
-                alt={`${mentor.name} avatar`}
-              />
-              <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                <div className="text-base font-semibold text-gray-900 dark:text-white">
-                  {mentor.firstName} {mentor.lastName}
-                </div>
-                <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                  {mentor.email}
-                </div>
-              </div>
-            </Table.Cell>
-            <Table.Cell
-              className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white"
-              style={{
-                maxWidth: '150px',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {mentor.jobTitle}
-            </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
-              {format(new Date(mentor.createdAt), 'dd-MM-yyyy')}
-            </Table.Cell>
-
-            <Table.Cell>
-              <div className="flex items-center gap-x-3 whitespace-nowrap">
-                <ViewMentorDetail mentor={mentor} />
-              </div>
-            </Table.Cell>
-          </Table.Row>
-        ))}
-      </Table.Body>
-    </Table>
-  );
-};
-
-const ViewMentorDetai1l: FC = function () {
-  const [isOpen, setOpen] = useState(false);
-
-  const viewMentor = () => {
-    setOpen(true);
-  };
-  const rejectMentor = () => {
-    setOpen(true);
-  };
   return (
     <>
-      <Button color="primary" onClick={viewMentor}>
+      <Button
+        color={mentor.isLocked == true ? 'success' : 'failure'}
+        onClick={() => handleUpdateLockStatus()}
+      >
         <div className="flex items-center gap-x-2">
-          <HiOutlineEye className="text-lg" />
-          Xem
+          {mentor.isLocked == true ? <HiLockOpen /> : <HiLockClosed />}
+          {mentor.isLocked == true ? 'Mở tài khoản' : 'Khóa tài khoản'}
         </div>
       </Button>
-      <Modal onClose={() => setOpen(false)} show={isOpen}>
-        <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
-          <strong>Edit user</strong>
-        </Modal.Header>
-        <Modal.Body>
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <div>
-              <Label htmlFor="firstName">First name</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="firstName"
-                  name="firstName"
-                  placeholder="Bonnie"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="lastName">Last name</Label>
-              <div className="mt-1">
-                <TextInput id="lastName" name="lastName" placeholder="Green" />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="email">Email</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="email"
-                  name="email"
-                  placeholder="example@company.com"
-                  type="email"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="phone">Phone number</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="phone"
-                  name="phone"
-                  placeholder="e.g., +(12)3456 789"
-                  type="tel"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="department">Department</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="department"
-                  name="department"
-                  placeholder="Development"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="company">Công ty</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="company"
-                  name="company"
-                  placeholder="Somewhere"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordCurrent">Current password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordCurrent"
-                  name="passwordCurrent"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="passwordNew">New password</Label>
-              <div className="mt-1">
-                <TextInput
-                  id="passwordNew"
-                  name="passwordNew"
-                  placeholder="••••••••"
-                  type="password"
-                />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button color="primary" onClick={() => setOpen(false)}>
-            Save all
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 };

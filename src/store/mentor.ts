@@ -1,6 +1,7 @@
-import create from "zustand";
-import memberApi from "../api/member-api";
-import { RoleType } from "../types";
+import create from 'zustand';
+import memberApi from '../api/member-api';
+import mentorApi from '../api/mentor-api';
+import {RoleType} from '../types';
 
 type Mentor = {
   id: string;
@@ -18,11 +19,11 @@ type MentorState = {
 
 export const useMentorStore = create<MentorState>((set) => ({
   mentors: [],
-  setMentors: (mentors) => set({ mentors }),
+  setMentors: (mentors) => set({mentors}),
   fetchMentors: async () => {
     try {
       const mentors = await memberApi.getAll(RoleType.Mentor);
-      console.log("MentorData", mentors);
+      console.log('MentorData', mentors);
       set((state) => ({
         mentors,
       }));
@@ -33,9 +34,20 @@ export const useMentorStore = create<MentorState>((set) => ({
   fetchMentorById: async (id: string) => {
     try {
       const mentor = await memberApi.getById(RoleType.Mentor, id);
-      console.log("MentorData", mentor);
+      console.log('MentorData', mentor);
       set((state) => ({
         mentors: state.mentors.map((m) => (m.id === id ? mentor : m)),
+      }));
+    } catch (error) {
+      console.error(error);
+    }
+  },
+  updateLockStatus: async (mentorId: string) => {
+    try {
+      const mentor = await mentorApi.updateLockStatus(mentorId);
+      console.log('MentorData', mentor);
+      set((state) => ({
+        mentors: state.mentors.map((m) => (m.id === mentorId ? mentor : m)),
       }));
     } catch (error) {
       console.error(error);

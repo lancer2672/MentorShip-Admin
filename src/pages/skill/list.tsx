@@ -114,7 +114,7 @@ const SkillListPage: FC = function () {
                   <span className="dark:text-white">Home</span>
                 </div>
               </Breadcrumb.Item>
-              <Breadcrumb.Item href="/skill">Đơn ứng tuyển</Breadcrumb.Item>
+              <Breadcrumb.Item href="/skill">Kĩ năng</Breadcrumb.Item>
               {/* <Breadcrumb.Item>List</Breadcrumb.Item> */}
             </Breadcrumb>
             <h1 className="text-xl font-semibold text-gray-900 dark:text-white sm:text-2xl">
