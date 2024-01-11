@@ -1,12 +1,12 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import { Badge, Dropdown, Table, useTheme } from "flowbite-react";
+import { Table, useTheme } from "flowbite-react";
 import type { FC } from "react";
 import { useEffect } from "react";
 import Chart from "react-apexcharts";
 import svgMap from "svgmap";
 import "svgmap/dist/svgMap.min.css";
-import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import { Datepicker } from "../components/datepicker";
+import NavbarSidebarLayout from "../layouts/navbar-sidebar";
 import formatCurrency from "../utils/formatCurrency";
 
 const DashboardPage: FC = function () {
@@ -14,10 +14,10 @@ const DashboardPage: FC = function () {
     <NavbarSidebarLayout>
       <div className="px-4 pt-6">
         <SalesThisWeek />
+        <UserSignupsThisWeek />
         <div className="mt-4 grid w-full grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
-          <NewProductsThisWeek />
-          <VisitorsThisWeek />
-          <UserSignupsThisWeek />
+          {/* <NewProductsThisWeek />
+          <VisitorsThisWeek /> */}
         </div>
         {/* <div className="my-4 grid grid-cols-1 xl:gap-4 2xl:grid-cols-3">
           <SessionsByCountry />
