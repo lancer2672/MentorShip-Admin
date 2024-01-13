@@ -1,8 +1,8 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 
-import "./index.css";
 import App from "./App";
+import "./index.css";
 
 const container = document.getElementById("root");
 
@@ -17,3 +17,20 @@ root.render(
     <App />
   </StrictMode>
 );
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("/service-worker.js").then(
+      function (registration) {
+        // Đăng ký thành công
+        console.log(
+          "ServiceWorker registration successful with scope: ",
+          registration.scope
+        );
+      },
+      function (err) {
+        // Đăng ký thất bại
+        console.log("ServiceWorker registration failed: ", err);
+      }
+    );
+  });
+}
