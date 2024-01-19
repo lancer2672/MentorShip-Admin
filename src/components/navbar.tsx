@@ -1,13 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
+import { Avatar, DarkThemeToggle, Dropdown, Navbar } from "flowbite-react";
 import type { FC } from "react";
-import {
-  Avatar,
-  DarkThemeToggle,
-  Dropdown,
-  Label,
-  Navbar,
-  TextInput,
-} from "flowbite-react";
 import {
   HiArchive,
   HiBell,
@@ -51,11 +44,6 @@ const ExampleNavbar: FC = function () {
               </button>
             )}
             <Navbar.Brand href="/">
-              <img
-                alt=""
-                src="https://flowbite.com/docs/images/logo.svg"
-                className="mr-3 h-6 sm:h-8"
-              />
               <span className="self-center whitespace-nowrap text-2xl font-semibold dark:text-white">
                 MentorShip
               </span>
@@ -84,13 +72,11 @@ const ExampleNavbar: FC = function () {
                 <span className="sr-only">Search</span>
                 <HiSearch className="h-6 w-6" />
               </button>
-              <NotificationBellDropdown />
+              {/* <NotificationBellDropdown /> */}
               {/* <AppDrawerDropdown /> */}
               <DarkThemeToggle />
             </div>
-            <div className="hidden lg:block">
-              <UserDropdown />
-            </div>
+            <div className="hidden lg:block">{/* <UserDropdown /> */}</div>
           </div>
         </div>
       </div>
@@ -459,8 +445,9 @@ const UserDropdown: FC = function () {
         <span>
           <span className="sr-only">User menu</span>
           <Avatar
+            style={{}}
             alt=""
-            img="../images/users/neil-sims.png"
+            img="https://static-00.iconduck.com/assets.00/avatar-default-symbolic-icon-479x512-n8sg74wg.png"
             rounded
             size="sm"
           />
