@@ -217,13 +217,13 @@ const AllMentees: FC = function ({mentees}) {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        <Table.HeadCell className="p-4">STT</Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên mentee</Table.HeadCell>
         <Table.HeadCell style={{maxWidth: '150px'}}>
           Số điện thoại
         </Table.HeadCell>
         <Table.HeadCell>Ngày tạo</Table.HeadCell>
-        {/* <Table.HeadCell>Số khoá học</Table.HeadCell> */}
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
 
@@ -233,6 +233,9 @@ const AllMentees: FC = function ({mentees}) {
             key={index}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center">{index + 1}</div>
+            </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               <div className="flex items-center">
                 {shortenId(mentee.id)}

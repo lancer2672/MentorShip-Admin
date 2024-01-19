@@ -298,8 +298,11 @@ const ViewApplicationDetail: FC = function ({
   const [isOpen, setOpen] = useState(false);
   const [isShow, setShow] = useState(false);
   const {applications, updateApplicationStatus} = useApplicationStore();
-  const onImageClick = () => {
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const onImageClick = (url) => {
     setShow(true);
+    setSelectedImage(url);
   };
 
   const closeModal = () => {
@@ -360,7 +363,9 @@ const ViewApplicationDetail: FC = function ({
             ></img>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <Label htmlFor="firstName">Họ và tên</Label>
+                <Label htmlFor="firstName" style={{fontWeight: 'bold'}}>
+                  Họ và tên
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>
                     {profileInfor.firstName} {profileInfor.lastName}
@@ -368,7 +373,9 @@ const ViewApplicationDetail: FC = function ({
                 </div>
               </div>
               <div>
-                <Label htmlFor="lastName">Ngày sinh</Label>
+                <Label htmlFor="lastName" style={{fontWeight: 'bold'}}>
+                  Ngày sinh
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>
                     {format(
@@ -379,19 +386,25 @@ const ViewApplicationDetail: FC = function ({
                 </div>
               </div>
               <div>
-                <Label htmlFor="email">Số điện thoại</Label>
+                <Label htmlFor="email" style={{fontWeight: 'bold'}}>
+                  Số điện thoại
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{profileInfor.phoneNumber}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" style={{fontWeight: 'bold'}}>
+                  Email
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{profileInfor.email}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="phone">Nghề nghiệp</Label>
+                <Label htmlFor="phone" style={{fontWeight: 'bold'}}>
+                  Nghề nghiệp
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{profileInfor.jobTitle}</p>
                 </div>
@@ -407,48 +420,82 @@ const ViewApplicationDetail: FC = function ({
             }}
           >
             <div>
-              <Label htmlFor="department">Lý lịch</Label>
+              <Label htmlFor="department" style={{fontWeight: 'bold'}}>
+                Thành tựu
+              </Label>
               <div className="mt-1">
-                <p style={styles.text}>{profileInfor.bio}</p>
+                <p style={styles.text}>{application.achievement}</p>
               </div>
             </div>
             <div>
-              <Label style={{marginTop: 12}} htmlFor="department">
+              <Label
+                style={{marginTop: 12, fontWeight: 'bold'}}
+                htmlFor="department"
+              >
                 Chứng chỉ
               </Label>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
-                {profileInfor.imageUrls.map((url) => {
-                  return (
-                    <div
-                      style={{alignItems: 'center', justifyContent: 'center'}}
-                    >
-                      <img
-                        onClick={onImageClick}
-                        src={url}
+              {profileInfor.imageUrls.length > 0 ? (
+                <div className="grid grid-cols-1 gap-6 sm:grid-cols-4">
+                  {profileInfor.imageUrls.map((url) => {
+                    return (
+                      <div
                         style={{
-                          objectFit: 'cover',
-                          backgroundColor: 'tomato',
-                          margin: 0,
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}
-                        width={180}
-                        height={40}
-                      ></img>
-                    </div>
-                  );
-                })}
-              </div>
+                      >
+                        <img
+                          onClick={() => onImageClick(url)}
+                          src={url}
+                          style={{
+                            objectFit: 'cover',
+                            backgroundColor: 'tomato',
+                            margin: 0,
+                          }}
+                          width={180}
+                          height={40}
+                        ></img>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div>
+                  <Label htmlFor="department">Không có chứng chỉ</Label>
+                </div>
+              )}
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
-          <Button
-            style={{alignSelf: 'flex-end', marginLeft: 'auto'}}
-            color="primary"
-            onClick={handleAcceptApplication}
-          >
-            Chấp thuận
-          </Button>
-        </Modal.Footer>
+        {application.status === ApprovalStatus.REJECTED ||
+        application.status === ApprovalStatus.APPROVED ? null : (
+          <Modal.Footer>
+            <Button
+              style={{alignSelf: 'flex-end', marginLeft: 'auto'}}
+              color="primary"
+              onClick={handleAcceptApplication}
+              disabled={
+                application.status === ApprovalStatus.REJECTED ||
+                application.status === ApprovalStatus.APPROVED
+              }
+            >
+              Chấp thuận
+            </Button>
+            <Button
+              color="failure"
+              // onClick={handleRejectApplication}
+              disabled={
+                application.status === ApprovalStatus.REJECTED ||
+                application.status === ApprovalStatus.APPROVED
+              }
+            >
+              <div className="flex items-center gap-x-2">
+                <HiX className="text-lg" />
+                Từ chối
+              </div>
+            </Button>
+          </Modal.Footer>
+        )}
       </Modal>
 
       <Modal
@@ -456,6 +503,7 @@ const ViewApplicationDetail: FC = function ({
         style={{}}
         onClose={() => setShow(false)}
         show={isShow}
+        size="3xl"
       >
         <Modal.Header className="border-b border-gray-200 !p-6 dark:border-gray-700">
           <strong>Chứng chỉ</strong>
@@ -469,10 +517,11 @@ const ViewApplicationDetail: FC = function ({
             }}
           >
             <img
-              style={{marginRight: 20}}
-              src="https://picsum.photos/200/300"
-              width={200}
-              height={160}
+              style={{marginRight: 20, minWidth: 400, minHeight: 400}}
+              // src="https://picsum.photos/200/300"
+              src={selectedImage}
+              width={400}
+              height={400}
             ></img>
           </div>
         </Modal.Body>
@@ -521,14 +570,9 @@ const AllApplications: FC = function ({applications}) {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
-        {/* <Table.HeadCell>
-          <Label htmlFor="select-all" className="sr-only">
-            Select all
-          </Label>
-          <Checkbox id="select-all" name="select-all" />
-        </Table.HeadCell> */}
+        <Table.HeadCell className="p-4">STT</Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
-        <Table.HeadCell>Tên</Table.HeadCell>
+        <Table.HeadCell>Họ và tên</Table.HeadCell>
         <Table.HeadCell>Ngày gửi</Table.HeadCell>
         <Table.HeadCell>Trạng thái</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
@@ -540,19 +584,8 @@ const AllApplications: FC = function ({applications}) {
             key={index}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
-            <Table.Cell className="w-4 p-4">
-              <div className="flex items-center">
-                <Checkbox
-                  checked={checkedItems[`checkbox-${index}`] || false} // Sử dụng trạng thái từ state
-                  onChange={handleChange} // Thêm hàm xử lý sự kiện thay đổi
-                  aria-describedby={`checkbox-${index}`}
-                  id={`checkbox-${index}`}
-                  name={`checkbox-${index}`} // Thêm thuộc tính name để xác định checkbox cụ thể nào đang được thay đổi
-                />
-                <label htmlFor={`checkbox-${index}`} className="sr-only">
-                  checkbox
-                </label>
-              </div>
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center">{index + 1}</div>
             </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               <div className="flex items-center">
@@ -568,10 +601,8 @@ const AllApplications: FC = function ({applications}) {
             <Table.Cell className="mr-12 flex items-center space-x-6 whitespace-nowrap p-4 lg:mr-0">
               <div>
                 <Avatar
-                  // className="h-10!important w-10 rounded-full"
                   img={application.mentorProfile.avatar}
                   alt={`${application.name} avatar`}
-                  // rounded
                 />
               </div>
               <div className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -625,7 +656,14 @@ const RejectButton: FC = function ({application}) {
   };
   return (
     <>
-      <Button color="failure" onClick={handleRejectApplication}>
+      <Button
+        color="failure"
+        onClick={handleRejectApplication}
+        disabled={
+          application.status === ApprovalStatus.REJECTED ||
+          application.status === ApprovalStatus.APPROVED
+        }
+      >
         <div className="flex items-center gap-x-2">
           <HiX className="text-lg" />
           Từ chối

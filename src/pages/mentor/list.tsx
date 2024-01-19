@@ -234,10 +234,11 @@ const AllMentors: FC = function ({mentors}) {
   return (
     <Table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
       <Table.Head className="bg-gray-100 dark:bg-gray-700">
+        <Table.HeadCell className="p-4">STT</Table.HeadCell>
         <Table.HeadCell>Id</Table.HeadCell>
         <Table.HeadCell>Tên mentor</Table.HeadCell>
         <Table.HeadCell style={{maxWidth: '150px'}}>Nghề nghiệp</Table.HeadCell>
-        <Table.HeadCell>Ngày tạo</Table.HeadCell>
+        {/* <Table.HeadCell>Ngày tạo</Table.HeadCell> */}
         <Table.HeadCell>Tình trạng</Table.HeadCell>
         <Table.HeadCell></Table.HeadCell>
       </Table.Head>
@@ -248,6 +249,9 @@ const AllMentors: FC = function ({mentors}) {
             key={index}
             className="hover:bg-gray-100 dark:hover:bg-gray-700"
           >
+            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+              <div className="flex items-center">{index + 1}</div>
+            </Table.Cell>
             <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               <div className="flex items-center">
                 {shortenId(mentor.id)}
@@ -284,9 +288,9 @@ const AllMentors: FC = function ({mentors}) {
             >
               {mentor.jobTitle}
             </Table.Cell>
-            <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
+            {/* <Table.Cell className="whitespace-nowrap p-4 text-base font-medium text-gray-900 dark:text-white">
               {format(new Date(mentor.createdAt), 'dd-MM-yyyy')}
-            </Table.Cell>
+            </Table.Cell> */}
             <Table.Cell className="whitespace-nowrap p-4 text-base font-normal text-gray-900 dark:text-white">
               <div className="flex items-center">
                 <div
@@ -374,7 +378,9 @@ const ViewMentorDetail: FC = function ({mentor}) {
             ></img>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
               <div>
-                <Label htmlFor="firstName">Họ và tên</Label>
+                <Label htmlFor="firstName" style={{fontWeight: 'bold'}}>
+                  Họ và tên
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>
                     {mentor.firstName} {mentor.lastName}
@@ -382,25 +388,33 @@ const ViewMentorDetail: FC = function ({mentor}) {
                 </div>
               </div>
               <div>
-                <Label htmlFor="lastName">Ngày sinh</Label>
+                <Label htmlFor="lastName" style={{fontWeight: 'bold'}}>
+                  Ngày sinh
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{mentor.dateOfBirth}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="email">Số điện thoại</Label>
+                <Label htmlFor="email" style={{fontWeight: 'bold'}}>
+                  Số điện thoại
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{mentor.phoneNumber}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" style={{fontWeight: 'bold'}}>
+                  Email
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{mentor.email}</p>
                 </div>
               </div>
               <div>
-                <Label htmlFor="phone">Nghề nghiệp</Label>
+                <Label htmlFor="phone" style={{fontWeight: 'bold'}}>
+                  Nghề nghiệp
+                </Label>
                 <div className="mt-1">
                   <p style={styles.text}>{mentor.jobTitle}</p>
                 </div>
@@ -412,7 +426,9 @@ const ViewMentorDetail: FC = function ({mentor}) {
             </div>
           </div>
           <div style={{marginTop: 12}}>
-            <Label htmlFor="department">Giới thiệu</Label>
+            <Label htmlFor="department" style={{fontWeight: 'bold'}}>
+              Giới thiệu
+            </Label>
             <div className="mt-1">
               <p style={styles.text}>
                 {mentor.introduction ? mentor.introduction : 'Không có'}
